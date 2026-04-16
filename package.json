@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "predev": "node -e \"const fs=require('fs'); if(!fs.existsSync('app/generated-tokens.css')){throw new Error('Missing generated token CSS');}\"",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",

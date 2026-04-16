@@ -5,52 +5,49 @@ import { Slot } from "radix-ui"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:border-[#B3B3B3] disabled:bg-surface-disable-default disabled:text-[#B3B3B3] disabled:cursor-not-allowed disabled:shadow-none aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground [a]:hover:bg-primary/80",
-        outline:
-          "border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
+        primary:
+          "rounded-full border-surface-primary-default bg-surface-primary-default text-white data-[size=sm]:text-[#F5F5F5] [&_svg]:text-[#F5F5F5] hover:border-surface-primary-hover hover:bg-surface-primary-hover hover:text-white/95 active:border-surface-primary-press active:bg-surface-primary-press active:text-white/90 data-[state=hover]:border-surface-primary-hover data-[state=hover]:bg-surface-primary-hover data-[state=hover]:text-white/95 data-[state=active]:border-surface-primary-press data-[state=active]:bg-surface-primary-press data-[state=active]:text-white/90 data-[size=sm]:hover:border-[#C6BDF9] data-[size=sm]:data-[state=hover]:border-[#C6BDF9]",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80 aria-expanded:bg-secondary aria-expanded:text-secondary-foreground",
-        ghost:
-          "hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50",
-        destructive:
-          "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
-        link: "text-primary underline-offset-4 hover:underline",
+          "rounded-full border-surface-secondary-default bg-surface-secondary-default text-white hover:border-surface-secondary-hover hover:bg-surface-secondary-hover active:border-surface-secondary-press active:bg-surface-secondary-press data-[state=hover]:border-surface-secondary-hover data-[state=hover]:bg-surface-secondary-hover data-[state=active]:border-surface-secondary-press data-[state=active]:bg-surface-secondary-press",
+        secondaryNeutral:
+          "rounded-full border-[#444444] bg-[#E6E6E6] text-[#2C2C2C] [&_svg]:text-[#1E1E1E] hover:border-[#383838] hover:bg-[#D9D9D9] active:border-[#2C2C2C] active:bg-[#B3B3B3] data-[state=hover]:border-[#383838] data-[state=hover]:bg-[#D9D9D9] data-[state=active]:border-[#2C2C2C] data-[state=active]:bg-[#B3B3B3] disabled:[&_svg]:text-[#B3B3B3] disabled:text-[#B3B3B3]",
+        secondarySubtle:
+          "rounded-full border-transparent bg-white text-[#2C2C2C] [&_svg]:text-[#1E1E1E] hover:border-[#444444] hover:bg-white active:border-[#2C2C2C] active:bg-[#E6E6E6] data-[state=hover]:border-[#444444] data-[state=hover]:bg-white data-[state=active]:border-[#2C2C2C] data-[state=active]:bg-[#E6E6E6] disabled:[&_svg]:text-[#B3B3B3] disabled:text-[#B3B3B3]",
+        neutral:
+          "rounded-full border-surface-primary-secondary bg-surface-primary-tertiary text-[#1C1549] [&_svg]:text-[#1E1E1E] hover:border-surface-primary-tertiary hover:bg-surface-primary-secondary hover:text-[#1C1549] active:border-surface-primary-hover active:bg-surface-primary-secondary-hover active:text-[#1C1549] data-[state=hover]:border-surface-primary-tertiary data-[state=hover]:bg-surface-primary-secondary data-[state=hover]:text-[#1C1549] data-[state=active]:border-surface-primary-hover data-[state=active]:bg-surface-primary-secondary-hover data-[state=active]:text-[#1C1549] disabled:[&_svg]:text-[#B3B3B3] disabled:text-[#B3B3B3]",
+        subtle:
+          "rounded-full border-transparent bg-transparent text-[#1C1549] [&_svg]:text-[#1E1E1E] hover:border-surface-default-tertiary hover:bg-white hover:text-[#1C1549] active:border-surface-primary-default active:bg-surface-primary-tertiary active:text-[#1C1549] data-[state=hover]:border-surface-default-tertiary data-[state=hover]:bg-white data-[state=hover]:text-[#1C1549] data-[state=active]:border-surface-primary-default data-[state=active]:bg-surface-primary-tertiary data-[state=active]:text-[#1C1549] disabled:[&_svg]:text-[#B3B3B3] disabled:text-[#B3B3B3]",
+        error:
+          "bg-surface-error-default text-white hover:bg-surface-error-hover active:bg-surface-error-press data-[state=hover]:bg-surface-error-hover data-[state=active]:bg-surface-error-press",
       },
       size: {
-        default:
-          "h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
-        xs: "h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
-        sm: "h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
-        lg: "h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
-        icon: "size-8",
-        "icon-xs":
-          "size-6 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-lg [&_svg:not([class*='size-'])]:size-3",
-        "icon-sm":
-          "size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg",
-        "icon-lg": "size-9",
+        sm: "h-9 gap-2 px-3 text-sm has-data-[icon=inline-end]:pr-2.5 has-data-[icon=inline-start]:pl-2.5 [&_svg:not([class*='size-'])]:size-4",
+        md: "h-10 gap-2 px-4 text-base has-data-[icon=inline-end]:pr-3 has-data-[icon=inline-start]:pl-3 [&_svg:not([class*='size-'])]:size-4",
       },
     },
     defaultVariants: {
-      variant: "default",
-      size: "default",
+      variant: "primary",
+      size: "md",
     },
   }
 )
 
-function Button({
-  className,
-  variant = "default",
-  size = "default",
-  asChild = false,
-  ...props
-}: React.ComponentProps<"button"> &
+type ButtonProps = React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean
-  }) {
+  }
+
+function Button({
+  className,
+  variant,
+  size,
+  asChild = false,
+  ...props
+}: ButtonProps): React.JSX.Element {
   const Comp = asChild ? Slot.Root : "button"
 
   return (
