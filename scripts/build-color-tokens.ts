@@ -36,11 +36,19 @@ type BuildThemeResult = {
   errors: BuildResolveError[];
 };
 
+const DEFAULT_TOKEN_FILES = {
+  // Intentional source filename spelling from design export.
+  primitives: "ColorPromitives.json",
+  light: "Light.tokens.json",
+  dark: "Dark.tokens.json",
+  glass: "Glass.tokens.json",
+} as const;
+
 const DEFAULT_INPUTS = {
-  primitives: path.resolve(process.cwd(), "tokens/ColorPromitives.json"),
-  light: path.resolve(process.cwd(), "tokens/Light.tokens.json"),
-  dark: path.resolve(process.cwd(), "tokens/Dark.tokens.json"),
-  glass: path.resolve(process.cwd(), "tokens/Glass.tokens.json"),
+  primitives: path.resolve(process.cwd(), `tokens/${DEFAULT_TOKEN_FILES.primitives}`),
+  light: path.resolve(process.cwd(), `tokens/${DEFAULT_TOKEN_FILES.light}`),
+  dark: path.resolve(process.cwd(), `tokens/${DEFAULT_TOKEN_FILES.dark}`),
+  glass: path.resolve(process.cwd(), `tokens/${DEFAULT_TOKEN_FILES.glass}`),
 };
 
 const OUTPUT_FILE = path.resolve(process.cwd(), "app/generated-tokens.css");
@@ -247,12 +255,6 @@ function buildThemeSemanticMap(
     const kebabDottedPath = token.path.map((segment) => toKebab(segment)).join(".");
     aliasIndex.set(kebabSlashPath, key);
     aliasIndex.set(kebabDottedPath, key);
-
-    if (token.aliasName) {
-      for (const candidate of buildAliasCandidates(token.aliasName)) {
-        aliasIndex.set(candidate, key);
-      }
-    }
   }
 
   const semantic = new Map<string, string>();
