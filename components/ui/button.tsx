@@ -22,7 +22,9 @@ const buttonVariants = cva(
         subtle:
           "rounded-full border-transparent bg-transparent text-[#1C1549] [&_svg]:text-[#1E1E1E] hover:border-surface-default-tertiary hover:bg-white hover:text-[#1C1549] active:border-surface-primary-default active:bg-surface-primary-tertiary active:text-[#1C1549] data-[state=hover]:border-surface-default-tertiary data-[state=hover]:bg-white data-[state=hover]:text-[#1C1549] data-[state=active]:border-surface-primary-default data-[state=active]:bg-surface-primary-tertiary data-[state=active]:text-[#1C1549] disabled:[&_svg]:text-[#B3B3B3] disabled:text-[#B3B3B3]",
         error:
-          "bg-surface-error-default text-white hover:bg-surface-error-hover active:bg-surface-error-press data-[state=hover]:bg-surface-error-hover data-[state=active]:bg-surface-error-press",
+          "rounded-full border-[#690807] bg-surface-error-default text-[#F5F5F5] leading-[1] data-[size=sm]:leading-[1.4] hover:border-[#C00F0C] hover:bg-surface-error-hover hover:text-white/95 active:border-[#690807] active:bg-surface-error-press active:text-white/90 data-[state=hover]:border-[#C00F0C] data-[state=hover]:bg-surface-error-hover data-[state=hover]:text-white/95 data-[state=active]:border-[#690807] data-[state=active]:bg-surface-error-press data-[state=active]:text-white/90",
+        errorSubtle:
+          "rounded-full border-transparent bg-transparent text-[#690807] leading-[1] data-[size=sm]:leading-[1.4] hover:border-[#F4776A] hover:bg-transparent active:border-[#EC221F] active:bg-transparent data-[state=hover]:border-[#F4776A] data-[state=hover]:data-[size=sm]:border-[#690807] data-[state=hover]:bg-transparent data-[state=active]:border-[#EC221F] data-[state=active]:bg-transparent"
       },
       size: {
         sm: "h-9 gap-2 px-3 text-sm has-data-[icon=inline-end]:pr-2.5 has-data-[icon=inline-start]:pl-2.5 [&_svg:not([class*='size-'])]:size-4",
