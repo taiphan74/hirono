@@ -1,0 +1,75 @@
+:root {
+  /* surface / default */
+  --surface-default-default: var(--color-white-1000);
+  --surface-default-default-hover: var(--color-gray-100);
+  --surface-default-secondary: var(--color-gray-100);
+  --surface-default-secondary-hover: var(--color-gray-200);
+  --surface-default-tertiary: var(--color-gray-300);
+  --surface-default-tertiary-hover: var(--color-gray-400);
+
+  /* surface / primary */
+  --surface-primary-default: var(--color-purple-500);
+  --surface-primary-hover: var(--color-purple-600);
+  --surface-primary-press: var(--color-purple-700);
+  --surface-primary-secondary: var(--color-purple-100);
+  --surface-primary-secondary-hover: var(--color-purple-200);
+  --surface-primary-secondary-press: var(--color-purple-300);
+  --surface-primary-tertiary: var(--surface-default-default);
+  --surface-primary-tertiary-hover: var(--color-purple-100);
+
+  /* surface / secondary */
+  --surface-secondary-default: var(--color-gray-800);
+  --surface-secondary-hover: var(--color-gray-900);
+  --surface-secondary-press: var(--color-gray-1000);
+  --surface-secondary-secondary: var(--color-gray-200);
+  --surface-secondary-secondary-hover: var(--color-gray-300);
+  --surface-secondary-secondary-press: var(--color-gray-400);
+  --surface-secondary-tertiary: var(--surface-default-default);
+  --surface-secondary-tertiary-hover: var(--color-gray-200);
+
+  /* surface / success */
+  --surface-success-default: var(--color-green-500);
+  --surface-success-hover: var(--color-green-600);
+  --surface-success-secondary: var(--color-green-200);
+  --surface-success-secondary-hover: var(--color-green-300);
+  --surface-success-tertiary: var(--color-green-100);
+  --surface-success-tertiary-hover: var(--color-green-200);
+
+  /* surface / neutral */
+  --surface-neutral-default: var(--color-slate-700);
+  --surface-neutral-hover: var(--color-slate-800);
+  --surface-neutral-secondary: var(--color-slate-300);
+  --surface-neutral-secondary-hover: var(--color-slate-400);
+  --surface-neutral-tertiary: var(--color-slate-200);
+  --surface-neutral-tertiary-hover: var(--color-slate-300);
+
+  /* surface / error */
+  --surface-error-default: var(--color-red-500);
+  --surface-error-hover: var(--color-red-600);
+  --surface-error-press: var(--color-red-700);
+  --surface-error-secondary: var(--color-red-200);
+  --surface-error-secondary-hover: var(--color-red-300);
+  --surface-error-secondary-press: var(--color-red-400);
+  --surface-error-tertiary: var(--color-red-100);
+  --surface-error-tertiary-hover: var(--color-red-200);
+  --surface-error-tertiary-press: var(--color-red-300);
+
+  /* surface / information */
+  --surface-information-default: var(--color-blue-500);
+  --surface-information-hover: var(--color-blue-600);
+  --surface-information-secondary: var(--color-blue-200);
+  --surface-information-secondary-hover: var(--color-blue-300);
+  --surface-information-tertiary: var(--color-blue-100);
+  --surface-information-tertiary-hover: var(--color-blue-200);
+
+  /* surface / warning */
+  --surface-warning-default: var(--color-yellow-500);
+  --surface-warning-hover: var(--color-yellow-600);
+  --surface-warning-secondary: var(--color-yellow-200);
+  --surface-warning-secondary-hover: var(--color-yellow-300);
+  --surface-warning-tertiary: var(--color-yellow-100);
+  --surface-warning-tertiary-hover: var(--color-yellow-200);
+
+  /* surface / disable */
+  --surface-disable-default: var(--color-gray-300);
+}

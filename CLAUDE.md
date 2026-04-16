@@ -19,6 +19,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   - `npm run start`
 - Lint:
   - `npm run lint`
+- Reliable lint/build from non-repo CWD:
+  - `npm --prefix "/home/muoi/project/Tech_Solve/hirono" run lint && npm --prefix "/home/muoi/project/Tech_Solve/hirono" run build`
+
+### Command gotchas
+
+- `npm run dev` - Runs `predev` and fails if `app/generated-tokens.css` is missing.
 
 ### Tests
 
@@ -41,6 +47,7 @@ This repository is currently a minimal App Router Next.js application with TypeS
 - **Styling model**
   - Tailwind CSS utility classes are used directly in components.
   - Global CSS variables (`--background`, `--foreground`) are mapped into Tailwind theme tokens via `@theme inline`.
+  - Primitive color tokens live at root-level `styles/tokens.css` and are imported in `app/globals.css` via `@import "../styles/tokens.css"`.
 
 - **Static assets**
   - Public assets are served from `public/` and referenced by components (e.g., logo SVGs used in `app/page.tsx`).

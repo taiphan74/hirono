@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@import "../styles/tokens.css";
+@import "../styles/semantic-tokens.css";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
@@ -39,6 +41,184 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+
+  /* primitive palette mappings */
+  --color-purple-100: var(--color-purple-100);
+  --color-purple-200: var(--color-purple-200);
+  --color-purple-300: var(--color-purple-300);
+  --color-purple-400: var(--color-purple-400);
+  --color-purple-500: var(--color-purple-500);
+  --color-purple-600: var(--color-purple-600);
+  --color-purple-700: var(--color-purple-700);
+  --color-purple-800: var(--color-purple-800);
+  --color-purple-900: var(--color-purple-900);
+  --color-purple-1000: var(--color-purple-1000);
+
+  --color-gray-100: var(--color-gray-100);
+  --color-gray-200: var(--color-gray-200);
+  --color-gray-300: var(--color-gray-300);
+  --color-gray-400: var(--color-gray-400);
+  --color-gray-500: var(--color-gray-500);
+  --color-gray-600: var(--color-gray-600);
+  --color-gray-700: var(--color-gray-700);
+  --color-gray-800: var(--color-gray-800);
+  --color-gray-900: var(--color-gray-900);
+  --color-gray-1000: var(--color-gray-1000);
+
+  --color-black-100: var(--color-black-100);
+  --color-black-200: var(--color-black-200);
+  --color-black-300: var(--color-black-300);
+  --color-black-400: var(--color-black-400);
+  --color-black-500: var(--color-black-500);
+  --color-black-600: var(--color-black-600);
+  --color-black-700: var(--color-black-700);
+  --color-black-800: var(--color-black-800);
+  --color-black-900: var(--color-black-900);
+  --color-black-1000: var(--color-black-1000);
+
+  --color-white-100: var(--color-white-100);
+  --color-white-200: var(--color-white-200);
+  --color-white-300: var(--color-white-300);
+  --color-white-400: var(--color-white-400);
+  --color-white-500: var(--color-white-500);
+  --color-white-600: var(--color-white-600);
+  --color-white-700: var(--color-white-700);
+  --color-white-800: var(--color-white-800);
+  --color-white-900: var(--color-white-900);
+  --color-white-1000: var(--color-white-1000);
+
+  --color-green-100: var(--color-green-100);
+  --color-green-200: var(--color-green-200);
+  --color-green-300: var(--color-green-300);
+  --color-green-400: var(--color-green-400);
+  --color-green-500: var(--color-green-500);
+  --color-green-600: var(--color-green-600);
+  --color-green-700: var(--color-green-700);
+  --color-green-800: var(--color-green-800);
+  --color-green-900: var(--color-green-900);
+  --color-green-1000: var(--color-green-1000);
+
+  --color-pink-100: var(--color-pink-100);
+  --color-pink-200: var(--color-pink-200);
+  --color-pink-300: var(--color-pink-300);
+  --color-pink-400: var(--color-pink-400);
+  --color-pink-500: var(--color-pink-500);
+  --color-pink-600: var(--color-pink-600);
+  --color-pink-700: var(--color-pink-700);
+  --color-pink-800: var(--color-pink-800);
+  --color-pink-900: var(--color-pink-900);
+  --color-pink-1000: var(--color-pink-1000);
+
+  --color-red-100: var(--color-red-100);
+  --color-red-200: var(--color-red-200);
+  --color-red-300: var(--color-red-300);
+  --color-red-400: var(--color-red-400);
+  --color-red-500: var(--color-red-500);
+  --color-red-600: var(--color-red-600);
+  --color-red-700: var(--color-red-700);
+  --color-red-800: var(--color-red-800);
+  --color-red-900: var(--color-red-900);
+  --color-red-1000: var(--color-red-1000);
+
+  --color-slate-100: var(--color-slate-100);
+  --color-slate-200: var(--color-slate-200);
+  --color-slate-300: var(--color-slate-300);
+  --color-slate-400: var(--color-slate-400);
+  --color-slate-500: var(--color-slate-500);
+  --color-slate-600: var(--color-slate-600);
+  --color-slate-700: var(--color-slate-700);
+  --color-slate-800: var(--color-slate-800);
+  --color-slate-900: var(--color-slate-900);
+  --color-slate-1000: var(--color-slate-1000);
+
+  --color-yellow-100: var(--color-yellow-100);
+  --color-yellow-200: var(--color-yellow-200);
+  --color-yellow-300: var(--color-yellow-300);
+  --color-yellow-400: var(--color-yellow-400);
+  --color-yellow-500: var(--color-yellow-500);
+  --color-yellow-600: var(--color-yellow-600);
+  --color-yellow-700: var(--color-yellow-700);
+  --color-yellow-800: var(--color-yellow-800);
+  --color-yellow-900: var(--color-yellow-900);
+  --color-yellow-1000: var(--color-yellow-1000);
+
+  --color-blue-100: var(--color-blue-100);
+  --color-blue-200: var(--color-blue-200);
+  --color-blue-300: var(--color-blue-300);
+  --color-blue-400: var(--color-blue-400);
+  --color-blue-500: var(--color-blue-500);
+  --color-blue-600: var(--color-blue-600);
+  --color-blue-700: var(--color-blue-700);
+  --color-blue-800: var(--color-blue-800);
+  --color-blue-900: var(--color-blue-900);
+  --color-blue-1000: var(--color-blue-1000);
+
+  /* surface semantic mappings */
+  --color-surface-default-default: var(--surface-default-default);
+  --color-surface-default-default-hover: var(--surface-default-default-hover);
+  --color-surface-default-secondary: var(--surface-default-secondary);
+  --color-surface-default-secondary-hover: var(--surface-default-secondary-hover);
+  --color-surface-default-tertiary: var(--surface-default-tertiary);
+  --color-surface-default-tertiary-hover: var(--surface-default-tertiary-hover);
+
+  --color-surface-primary-default: var(--surface-primary-default);
+  --color-surface-primary-hover: var(--surface-primary-hover);
+  --color-surface-primary-press: var(--surface-primary-press);
+  --color-surface-primary-secondary: var(--surface-primary-secondary);
+  --color-surface-primary-secondary-hover: var(--surface-primary-secondary-hover);
+  --color-surface-primary-secondary-press: var(--surface-primary-secondary-press);
+  --color-surface-primary-tertiary: var(--surface-primary-tertiary);
+  --color-surface-primary-tertiary-hover: var(--surface-primary-tertiary-hover);
+
+  --color-surface-secondary-default: var(--surface-secondary-default);
+  --color-surface-secondary-hover: var(--surface-secondary-hover);
+  --color-surface-secondary-press: var(--surface-secondary-press);
+  --color-surface-secondary-secondary: var(--surface-secondary-secondary);
+  --color-surface-secondary-secondary-hover: var(--surface-secondary-secondary-hover);
+  --color-surface-secondary-secondary-press: var(--surface-secondary-secondary-press);
+  --color-surface-secondary-tertiary: var(--surface-secondary-tertiary);
+  --color-surface-secondary-tertiary-hover: var(--surface-secondary-tertiary-hover);
+
+  --color-surface-success-default: var(--surface-success-default);
+  --color-surface-success-hover: var(--surface-success-hover);
+  --color-surface-success-secondary: var(--surface-success-secondary);
+  --color-surface-success-secondary-hover: var(--surface-success-secondary-hover);
+  --color-surface-success-tertiary: var(--surface-success-tertiary);
+  --color-surface-success-tertiary-hover: var(--surface-success-tertiary-hover);
+
+  --color-surface-neutral-default: var(--surface-neutral-default);
+  --color-surface-neutral-hover: var(--surface-neutral-hover);
+  --color-surface-neutral-secondary: var(--surface-neutral-secondary);
+  --color-surface-neutral-secondary-hover: var(--surface-neutral-secondary-hover);
+  --color-surface-neutral-tertiary: var(--surface-neutral-tertiary);
+  --color-surface-neutral-tertiary-hover: var(--surface-neutral-tertiary-hover);
+
+  --color-surface-error-default: var(--surface-error-default);
+  --color-surface-error-hover: var(--surface-error-hover);
+  --color-surface-error-press: var(--surface-error-press);
+  --color-surface-error-secondary: var(--surface-error-secondary);
+  --color-surface-error-secondary-hover: var(--surface-error-secondary-hover);
+  --color-surface-error-secondary-press: var(--surface-error-secondary-press);
+  --color-surface-error-tertiary: var(--surface-error-tertiary);
+  --color-surface-error-tertiary-hover: var(--surface-error-tertiary-hover);
+  --color-surface-error-tertiary-press: var(--surface-error-tertiary-press);
+
+  --color-surface-information-default: var(--surface-information-default);
+  --color-surface-information-hover: var(--surface-information-hover);
+  --color-surface-information-secondary: var(--surface-information-secondary);
+  --color-surface-information-secondary-hover: var(--surface-information-secondary-hover);
+  --color-surface-information-tertiary: var(--surface-information-tertiary);
+  --color-surface-information-tertiary-hover: var(--surface-information-tertiary-hover);
+
+  --color-surface-warning-default: var(--surface-warning-default);
+  --color-surface-warning-hover: var(--surface-warning-hover);
+  --color-surface-warning-secondary: var(--surface-warning-secondary);
+  --color-surface-warning-secondary-hover: var(--surface-warning-secondary-hover);
+  --color-surface-warning-tertiary: var(--surface-warning-tertiary);
+  --color-surface-warning-tertiary-hover: var(--surface-warning-tertiary-hover);
+
+  --color-surface-disable-default: var(--surface-disable-default);
+
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);

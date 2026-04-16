@@ -1,0 +1,122 @@
+:root {
+  /* purple */
+  --color-purple-100: #E2DEFC;
+  --color-purple-200: #C6BDF9;
+  --color-purple-300: #A99DF5;
+  --color-purple-400: #8D7CF2;
+  --color-purple-500: #705BEF;
+  --color-purple-600: #5B49C5;
+  --color-purple-700: #46389C;
+  --color-purple-800: #312672;
+  --color-purple-900: #1C1549;
+  --color-purple-1000: #07031F;
+
+  /* gray */
+  --color-gray-100: #F5F5F5;
+  --color-gray-200: #E6E6E6;
+  --color-gray-300: #D9D9D9;
+  --color-gray-400: #B3B3B3;
+  --color-gray-500: #757575;
+  --color-gray-600: #444444;
+  --color-gray-700: #383838;
+  --color-gray-800: #2C2C2C;
+  --color-gray-900: #1E1E1E;
+  --color-gray-1000: #111111;
+
+  /* black (opacity scale) */
+  --color-black-100: rgba(12, 12, 13, 0.05);
+  --color-black-200: rgba(12, 12, 13, 0.1);
+  --color-black-300: rgba(12, 12, 13, 0.2);
+  --color-black-400: rgba(12, 12, 13, 0.4);
+  --color-black-500: rgba(12, 12, 13, 0.7);
+  --color-black-600: rgba(12, 12, 13, 0.8);
+  --color-black-700: rgba(12, 12, 13, 0.85);
+  --color-black-800: rgba(12, 12, 13, 0.9);
+  --color-black-900: rgba(12, 12, 13, 0.95);
+  --color-black-1000: #0C0C0D;
+
+  /* white (opacity scale) */
+  --color-white-100: rgba(255, 255, 255, 0.05);
+  --color-white-200: rgba(255, 255, 255, 0.1);
+  --color-white-300: rgba(255, 255, 255, 0.2);
+  --color-white-400: rgba(255, 255, 255, 0.4);
+  --color-white-500: rgba(255, 255, 255, 0.7);
+  --color-white-600: rgba(255, 255, 255, 0.8);
+  --color-white-700: rgba(255, 255, 255, 0.85);
+  --color-white-800: rgba(255, 255, 255, 0.9);
+  --color-white-900: rgba(255, 255, 255, 0.95);
+  --color-white-1000: #FFFFFF;
+
+  /* green */
+  --color-green-100: #EBFFEE;
+  --color-green-200: #CFF7D3;
+  --color-green-300: #AFF4C6;
+  --color-green-400: #85E0A3;
+  --color-green-500: #14AE5C;
+  --color-green-600: #009951;
+  --color-green-700: #008043;
+  --color-green-800: #02542D;
+  --color-green-900: #024023;
+  --color-green-1000: #062D1B;
+
+  /* pink */
+  --color-pink-100: #FCF1FD;
+  --color-pink-200: #FAE1FA;
+  --color-pink-300: #F5C0EF;
+  --color-pink-400: #F19EDC;
+  --color-pink-500: #EA3FB8;
+  --color-pink-600: #D732A8;
+  --color-pink-700: #BA2A92;
+  --color-pink-800: #8A226F;
+  --color-pink-900: #57184A;
+  --color-pink-1000: #3F1536;
+
+  /* red */
+  --color-red-100: #FEE9E7;
+  --color-red-200: #FDD3D0;
+  --color-red-300: #FCB3AD;
+  --color-red-400: #F4776A;
+  --color-red-500: #EC221F;
+  --color-red-600: #C00F0C;
+  --color-red-700: #900B09;
+  --color-red-800: #690807;
+  --color-red-900: #4D0B0A;
+  --color-red-1000: #300603;
+
+  /* slate */
+  --color-slate-100: #F3F3F3;
+  --color-slate-200: #E3E3E3;
+  --color-slate-300: #CDCDCD;
+  --color-slate-400: #B2B2B2;
+  --color-slate-500: #949494;
+  --color-slate-600: #767676;
+  --color-slate-700: #5A5A5A;
+  --color-slate-800: #434343;
+  --color-slate-900: #303030;
+  --color-slate-1000: #242424;
+
+  /* yellow */
+  /* temporary value: yellow-100 pending final Figma confirmation */
+  --color-yellow-100: #FFFBEA;
+  --color-yellow-200: #FFF1C2;
+  --color-yellow-300: #FFE8A3;
+  --color-yellow-400: #E8B931;
+  --color-yellow-500: #E5A000;
+  --color-yellow-600: #BF6A02;
+  --color-yellow-700: #975102;
+  --color-yellow-800: #682D03;
+  --color-yellow-900: #522504;
+  --color-yellow-1000: #401B01;
+
+  /* blue */
+  --color-blue-100: #F1F6FD;
+  --color-blue-200: #E1EBFA;
+  --color-blue-300: #C0D4F5;
+  --color-blue-400: #9EBEF1;
+  --color-blue-500: #3F81EA;
+  --color-blue-600: #3271D7;
+  --color-blue-700: #2A61BA;
+  --color-blue-800: #224A8A;
+  --color-blue-900: #183057;
+  --color-blue-1000: #15253F;
+}
