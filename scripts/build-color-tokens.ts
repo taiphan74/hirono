@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 type TokenNode = {
@@ -16,11 +16,31 @@ type FlatToken = {
 
 type ThemeName = "light" | "dark" | "glass";
 
-const INPUTS = {
-  primitives: "/home/muoi/Downloads/Color Promitives/ColorPromitives.json",
-  light: "/home/muoi/Downloads/Colors/Light.tokens.json",
-  dark: "/home/muoi/Downloads/Colors/Dark.tokens.json",
-  glass: "/home/muoi/Downloads/Colors/Glass.tokens.json",
+type InputKey = keyof typeof DEFAULT_INPUTS;
+
+type InputPaths = Record<InputKey, string>;
+
+type BuildOptions = {
+  inputs: InputPaths;
+};
+
+type BuildResolveError = {
+  semanticKey: string;
+  tokenPath: string;
+  message: string;
+};
+
+type BuildThemeResult = {
+  semantic: Map<string, string>;
+  warnings: string[];
+  errors: BuildResolveError[];
+};
+
+const DEFAULT_INPUTS = {
+  primitives: path.resolve(process.cwd(), "tokens/ColorPromitives.json"),
+  light: path.resolve(process.cwd(), "tokens/Light.tokens.json"),
+  dark: path.resolve(process.cwd(), "tokens/Dark.tokens.json"),
+  glass: path.resolve(process.cwd(), "tokens/Glass.tokens.json"),
 };
 
 const OUTPUT_FILE = path.resolve(process.cwd(), "app/generated-tokens.css");
@@ -203,11 +223,13 @@ function mapSemanticKey(tokenPath: string[]): string {
 }
 
 function buildThemeSemanticMap(
+  theme: ThemeName,
   themeTokens: FlatToken[],
   primitiveMap: Map<string, FlatToken>,
   lightSemantic?: Map<string, string>
-): { semantic: Map<string, string>; warnings: string[] } {
+): BuildThemeResult {
   const warnings: string[] = [];
+  const errors: BuildResolveError[] = [];
   const tokenMap = buildValueMap(themeTokens);
 
   const combinedMap = new Map<string, FlatToken>([...primitiveMap, ...tokenMap]);
@@ -234,16 +256,34 @@ function buildThemeSemanticMap(
   }
 
   const semantic = new Map<string, string>();
+  const semanticSourcePath = new Map<string, string>();
+
   for (const token of themeTokens) {
     const semanticKey = mapSemanticKey(token.path);
     if (!semanticKey) continue;
 
     const key = token.path.join("/");
+    const existingPath = semanticSourcePath.get(semanticKey);
+    if (existingPath && existingPath !== key) {
+      warnings.push(
+        `Semantic collision in ${theme}: '${semanticKey}' mapped by both '${existingPath}' and '${key}'. Using latest value from '${key}'.`
+      );
+    }
+
     try {
       const hex = resolveTokenHex(key, combinedMap, aliasIndex);
       semantic.set(semanticKey, hex);
-    } catch {
-      continue;
+      semanticSourcePath.set(semanticKey, key);
+    } catch (error) {
+      const reason = error instanceof Error ? error.message : String(error);
+      if (semantic.has(semanticKey)) {
+        warnings.push(
+          `Skipping unresolved collision candidate '${key}' for semantic '${semanticKey}' in ${theme}: ${reason}`
+        );
+        continue;
+      }
+
+      errors.push({ semanticKey, tokenPath: key, message: reason });
     }
   }
 
@@ -256,7 +296,7 @@ function buildThemeSemanticMap(
     }
   }
 
-  return { semantic, warnings };
+  return { semantic, warnings, errors };
 }
 
 function cssBlock(selector: string, vars: Map<string, string>): string {
@@ -278,22 +318,70 @@ function readJson(file: string): unknown {
   return JSON.parse(readFileSync(file, "utf8"));
 }
 
-function main(): void {
-  const primitives = flattenTokens(readJson(INPUTS.primitives));
-  const light = flattenTokens(readJson(INPUTS.light));
-  const dark = flattenTokens(readJson(INPUTS.dark));
-  const glass = flattenTokens(readJson(INPUTS.glass));
+function resolveInputPath(args: string[], key: InputKey): string {
+  const prefix = `--${key}=`;
+  const argValue = args.find((arg) => arg.startsWith(prefix))?.slice(prefix.length);
+  const envValue = process.env[`TOKENS_${key.toUpperCase()}_FILE`];
+  const candidate = argValue || envValue || DEFAULT_INPUTS[key];
+  return path.resolve(process.cwd(), candidate);
+}
+
+function resolveInputs(args: string[]): InputPaths {
+  return {
+    primitives: resolveInputPath(args, "primitives"),
+    light: resolveInputPath(args, "light"),
+    dark: resolveInputPath(args, "dark"),
+    glass: resolveInputPath(args, "glass"),
+  };
+}
+
+function ensureInputFiles(inputs: InputPaths): void {
+  const missing = Object.entries(inputs).filter(([, filePath]) => !existsSync(filePath));
+  if (missing.length > 0) {
+    const details = missing.map(([name, filePath]) => `${name}: ${filePath}`).join("\n");
+    throw new Error(
+      `Missing required token input file(s):\n${details}\n` +
+      "Provide --primitives= --light= --dark= --glass= args or TOKENS_*_FILE env vars."
+    );
+  }
+}
+
+function main(options: BuildOptions): void {
+  ensureInputFiles(options.inputs);
+
+  const primitives = flattenTokens(readJson(options.inputs.primitives));
+  const light = flattenTokens(readJson(options.inputs.light));
+  const dark = flattenTokens(readJson(options.inputs.dark));
+  const glass = flattenTokens(readJson(options.inputs.glass));
 
   const primitiveMap = buildValueMap(primitives);
 
-  const lightResult = buildThemeSemanticMap(light, primitiveMap);
+  const lightResult = buildThemeSemanticMap("light", light, primitiveMap);
   validateRequired(lightResult.semantic, "light");
 
-  const darkResult = buildThemeSemanticMap(dark, primitiveMap, lightResult.semantic);
+  const darkResult = buildThemeSemanticMap("dark", dark, primitiveMap, lightResult.semantic);
   validateRequired(darkResult.semantic, "dark");
 
-  const glassResult = buildThemeSemanticMap(glass, primitiveMap, lightResult.semantic);
+  const glassResult = buildThemeSemanticMap("glass", glass, primitiveMap, lightResult.semantic);
   validateRequired(glassResult.semantic, "glass");
+
+  const errors = [...lightResult.errors, ...darkResult.errors, ...glassResult.errors];
+  const requiredErrorSet = new Set(REQUIRED_SEMANTIC);
+  const requiredErrors = errors.filter((error) => requiredErrorSet.has(error.semanticKey as (typeof REQUIRED_SEMANTIC)[number]));
+
+  errors.forEach((error) => {
+    console.error(
+      `[tokens:build] Failed resolving token '${error.tokenPath}' for semantic '${error.semanticKey}': ${error.message}`
+    );
+  });
+
+  if (requiredErrors.length > 0) {
+    throw new Error(`[tokens:build] Unresolved required semantic mappings: ${requiredErrors.length}`);
+  }
+
+  if (errors.length > requiredErrors.length) {
+    console.warn(`[tokens:build] Ignored ${errors.length - requiredErrors.length} unresolved non-required mappings.`);
+  }
 
   const header = [
     "/* AUTO-GENERATED FILE. DO NOT EDIT MANUALLY. */",
@@ -308,11 +396,11 @@ function main(): void {
 
   writeFileSync(OUTPUT_FILE, `${header}\n\n${body}\n`, "utf8");
 
-  [...darkResult.warnings, ...glassResult.warnings].forEach((warning) => {
+  [...lightResult.warnings, ...darkResult.warnings, ...glassResult.warnings].forEach((warning) => {
     console.warn(`[tokens:build] ${warning}`);
   });
 
   console.log(`[tokens:build] Generated ${OUTPUT_FILE}`);
 }
 
-main();
+main({ inputs: resolveInputs(process.argv.slice(2)) });
