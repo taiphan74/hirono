@@ -243,18 +243,37 @@ function buildThemeSemanticMap(
   const combinedMap = new Map<string, FlatToken>([...primitiveMap, ...tokenMap]);
   const aliasIndex = new Map<string, string>();
 
+  const indexAlias = (alias: string, nextKey: string): void => {
+    const existingKey = aliasIndex.get(alias);
+    if (!existingKey) {
+      aliasIndex.set(alias, nextKey);
+      return;
+    }
+
+    if (existingKey === nextKey) return;
+
+    const existingToken = combinedMap.get(existingKey);
+    const nextToken = combinedMap.get(nextKey);
+    const existingPath = existingToken ? existingToken.path.join("/") : existingKey;
+    const nextPath = nextToken ? nextToken.path.join("/") : nextKey;
+
+    warnings.push(
+      `Alias index collision in ${theme}: alias '${alias}' already mapped to key '${existingKey}' (path '${existingPath}'); conflicting key '${nextKey}' (path '${nextPath}') ignored.`
+    );
+  };
+
   for (const [key, token] of combinedMap.entries()) {
-    aliasIndex.set(key, key);
+    indexAlias(key, key);
 
     const slashPath = token.path.join("/");
     const dottedPath = token.path.join(".");
-    aliasIndex.set(slashPath, key);
-    aliasIndex.set(dottedPath, key);
+    indexAlias(slashPath, key);
+    indexAlias(dottedPath, key);
 
     const kebabSlashPath = token.path.map((segment) => toKebab(segment)).join("/");
     const kebabDottedPath = token.path.map((segment) => toKebab(segment)).join(".");
-    aliasIndex.set(kebabSlashPath, key);
-    aliasIndex.set(kebabDottedPath, key);
+    indexAlias(kebabSlashPath, key);
+    indexAlias(kebabDottedPath, key);
   }
 
   const semantic = new Map<string, string>();
