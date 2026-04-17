@@ -4,6 +4,7 @@ import { InputField } from "@/components/ui/input-field";
 import { SelectField } from "@/components/ui/select-field";
 import { DatePickerField } from "@/components/ui/date-picker-field";
 import { RadioGroupField } from "@/components/ui/radio-group-field";
+import { SearchField } from "@/components/ui/search-field";
 import { ChevronRight, Navigation } from "lucide-react";
 
 type DemoVariant =
@@ -477,6 +478,53 @@ function DemoRadioMatrix(): React.JSX.Element {
   );
 }
 
+type SearchState = "Default" | "Disabled";
+type SearchValueType = "Filled" | "Placeholder";
+
+const searchStates: SearchState[] = ["Default", "Disabled"];
+const searchValueTypes: SearchValueType[] = ["Filled", "Placeholder"];
+
+function DemoSearchCell({
+  state,
+  valueType,
+}: {
+  state: SearchState;
+  valueType: SearchValueType;
+}): React.JSX.Element {
+  return (
+    <SearchField
+      state={state === "Disabled" ? "disabled" : "default"}
+      valueType={valueType === "Filled" ? "filled" : "placeholder"}
+      defaultValue={valueType === "Filled" ? "Value" : undefined}
+      placeholder="Value"
+    />
+  );
+}
+
+function DemoSearchMatrix(): React.JSX.Element {
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-[120px_repeat(2,minmax(180px,1fr))] items-center gap-4">
+        <div />
+        {searchValueTypes.map((type) => (
+          <div key={type} className="rounded-full bg-black/5 px-2 py-1 text-center text-xs text-black/70">
+            {type}
+          </div>
+        ))}
+      </div>
+
+      {searchStates.map((state) => (
+        <div key={state} className="grid grid-cols-[120px_repeat(2,minmax(180px,1fr))] items-start gap-4">
+          <span className="rounded-full bg-black/10 px-2 py-1 text-center text-[11px] text-black/70">{state}</span>
+          {searchValueTypes.map((valueType) => (
+            <DemoSearchCell key={`${state}-${valueType}`} state={state} valueType={valueType} />
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function HomeContent(): React.JSX.Element {
   return (
     <>
@@ -524,6 +572,15 @@ function HomeContent(): React.JSX.Element {
           </span>
         </div>
         <DemoRadioMatrix />
+      </Section>
+
+      <Section title="Search">
+        <div className="mb-4 flex items-center gap-2">
+          <span className="rounded-full bg-surface-primary-default px-2.5 py-1 text-xs text-white">
+            Search
+          </span>
+        </div>
+        <DemoSearchMatrix />
       </Section>
     </>
   );
