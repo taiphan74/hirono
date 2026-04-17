@@ -30,6 +30,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - For pixel-accurate Figma button parity (node `184:609`), audit by `Type x Variant x Size x State` and use dedicated variants (e.g. `secondaryNeutral`, `secondarySubtle`) when one variant cannot represent all cells.
 - When matching Figma button visuals, verify icon stroke color separately from label color (do not assume icon color == text color).
 - `npm run dev` + "Another next dev server is already running" - Reuse existing server URL/PID from log output instead of launching a second instance.
+- `npx shadcn@latest add calendar` - CLI may prompt to overwrite `components/ui/button.tsx`; answer `No` to keep project button variants and only regenerate `calendar.tsx`.
+- After regenerating shadcn `calendar.tsx`, replace `Button` props `variant="ghost"` / `size="icon"` with supported project variants/sizes (e.g. `variant="subtle"`, `size="md"`) to pass TypeScript build.
 - For interactive demo fields, avoid hard-binding display state to static props; keep local state in `*-field` wrappers and sync from props via `useEffect` only when prop changes.
 - Any `components/ui/*-field.tsx` file that uses React hooks (`useState`, `useEffect`) must include `"use client"` at the top.
 

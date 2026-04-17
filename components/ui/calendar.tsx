@@ -11,6 +11,13 @@ import {
 import { cn } from "@/lib/utils"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { ChevronLeftIcon, ChevronRightIcon, ChevronDownIcon } from "lucide-react"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 function Calendar({
   className,
@@ -164,6 +171,7 @@ function Calendar({
         DayButton: ({ ...props }) => (
           <CalendarDayButton locale={locale} {...props} />
         ),
+        Dropdown: (props) => <CalendarDropdown {...props} />,
         WeekNumber: ({ children, ...props }) => {
           return (
             <td {...props}>
@@ -177,6 +185,69 @@ function Calendar({
       }}
       {...props}
     />
+  )
+}
+
+function CalendarDropdown({
+  className,
+  value,
+  onChange,
+  options,
+  disabled,
+  ...props
+}: {
+  className?: string
+  value?: string | number | readonly string[]
+  onChange?: React.ChangeEventHandler<HTMLSelectElement>
+  options?: { value: number; label: string; disabled: boolean }[]
+  disabled?: boolean
+} & Omit<React.ComponentProps<"select">, "onChange">) {
+  const selectedValue =
+    value !== undefined
+      ? Array.isArray(value)
+        ? String(value[0] ?? "")
+        : String(value)
+      : undefined
+
+  return (
+    <Select
+      value={selectedValue}
+      onValueChange={(nextValue) => {
+        if (!onChange) return
+        const event = {
+          target: { value: nextValue },
+          currentTarget: { value: nextValue },
+        } as React.ChangeEvent<HTMLSelectElement>
+        onChange(event)
+      }}
+      disabled={disabled}
+    >
+      <SelectTrigger className={cn("h-(--cell-size) min-w-[92px] rounded-(--cell-radius) py-0 pl-3 pr-2", className)}>
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>
+        {options?.map((option) => (
+          <SelectItem key={option.value} value={String(option.value)} disabled={option.disabled}>
+            {option.label}
+          </SelectItem>
+        ))}
+      </SelectContent>
+      <select
+        {...props}
+        value={selectedValue}
+        onChange={onChange}
+        disabled={disabled}
+        className="sr-only"
+        tabIndex={-1}
+        aria-hidden="true"
+      >
+        {options?.map((option) => (
+          <option key={option.value} value={option.value} disabled={option.disabled}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+    </Select>
   )
 }
 

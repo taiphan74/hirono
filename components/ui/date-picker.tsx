@@ -110,7 +110,13 @@ function DatePickerTrigger({
         </button>
       </PopoverTrigger>
       <PopoverContent className="w-auto rounded-[24px] border-[#D9D9D9] p-2" align="start">
-        <Calendar mode="single" selected={selectedDate} onSelect={handleSelect} initialFocus />
+        <Calendar
+          mode="single"
+          captionLayout="dropdown"
+          selected={selectedDate}
+          onSelect={handleSelect}
+          initialFocus
+        />
       </PopoverContent>
     </Popover>
   )
