@@ -5,6 +5,7 @@ import { SelectField } from "@/components/ui/select-field";
 import { DatePickerField } from "@/components/ui/date-picker-field";
 import { RadioGroupField } from "@/components/ui/radio-group-field";
 import { SearchField } from "@/components/ui/search-field";
+import { SwitchField } from "@/components/ui/switch-field";
 import { ChevronRight, Navigation } from "lucide-react";
 
 type DemoVariant =
@@ -525,6 +526,53 @@ function DemoSearchMatrix(): React.JSX.Element {
   );
 }
 
+type SwitchState = "Default" | "Disabled";
+type SwitchValueType = "Checked" | "Unchecked";
+
+const switchStates: SwitchState[] = ["Default", "Disabled"];
+const switchValueTypes: SwitchValueType[] = ["Checked", "Unchecked"];
+
+function DemoSwitchCell({
+  state,
+  valueType,
+}: {
+  state: SwitchState;
+  valueType: SwitchValueType;
+}): React.JSX.Element {
+  return (
+    <SwitchField
+      state={state === "Disabled" ? "disabled" : "default"}
+      valueType={valueType === "Checked" ? "checked" : "unchecked"}
+      label="Label"
+      description="Description"
+    />
+  );
+}
+
+function DemoSwitchMatrix(): React.JSX.Element {
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-[120px_repeat(2,minmax(180px,1fr))] items-center gap-4">
+        <div />
+        {switchValueTypes.map((type) => (
+          <div key={type} className="rounded-full bg-black/5 px-2 py-1 text-center text-xs text-black/70">
+            {type}
+          </div>
+        ))}
+      </div>
+
+      {switchStates.map((state) => (
+        <div key={state} className="grid grid-cols-[120px_repeat(2,minmax(180px,1fr))] items-start gap-4">
+          <span className="rounded-full bg-black/10 px-2 py-1 text-center text-[11px] text-black/70">{state}</span>
+          {switchValueTypes.map((valueType) => (
+            <DemoSwitchCell key={`${state}-${valueType}`} state={state} valueType={valueType} />
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function HomeContent(): React.JSX.Element {
   return (
     <>
@@ -581,6 +629,15 @@ function HomeContent(): React.JSX.Element {
           </span>
         </div>
         <DemoSearchMatrix />
+      </Section>
+
+      <Section title="Switch">
+        <div className="mb-4 flex items-center gap-2">
+          <span className="rounded-full bg-surface-primary-default px-2.5 py-1 text-xs text-white">
+            Switch
+          </span>
+        </div>
+        <DemoSwitchMatrix />
       </Section>
     </>
   );
