@@ -63,12 +63,12 @@ function Calendar({
         ),
         button_previous: cn(
           buttonVariants({ variant: buttonVariant }),
-          "size-(--cell-size) p-0 select-none aria-disabled:opacity-50",
+          "size-(--cell-size) cursor-pointer p-0 select-none aria-disabled:opacity-50",
           defaultClassNames.button_previous
         ),
         button_next: cn(
           buttonVariants({ variant: buttonVariant }),
-          "size-(--cell-size) p-0 select-none aria-disabled:opacity-50",
+          "size-(--cell-size) cursor-pointer p-0 select-none aria-disabled:opacity-50",
           defaultClassNames.button_next
         ),
         month_caption: cn(
@@ -189,19 +189,16 @@ function Calendar({
 }
 
 function CalendarDropdown({
-  className,
   value,
   onChange,
   options,
   disabled,
-  ...props
 }: {
-  className?: string
   value?: string | number | readonly string[]
   onChange?: React.ChangeEventHandler<HTMLSelectElement>
   options?: { value: number; label: string; disabled: boolean }[]
   disabled?: boolean
-} & Omit<React.ComponentProps<"select">, "onChange">) {
+}) {
   const selectedValue =
     value !== undefined
       ? Array.isArray(value)
@@ -222,8 +219,10 @@ function CalendarDropdown({
       }}
       disabled={disabled}
     >
-      <SelectTrigger className={cn("h-(--cell-size) min-w-[92px] rounded-(--cell-radius) py-0 pl-3 pr-2", className)}>
-        <SelectValue />
+      <SelectTrigger className="h-(--cell-size) min-w-[92px] rounded-(--cell-radius) py-0 pl-3 pr-2">
+        <SelectValue>
+          {options?.find((option) => String(option.value) === selectedValue)?.label}
+        </SelectValue>
       </SelectTrigger>
       <SelectContent>
         {options?.map((option) => (
@@ -232,21 +231,6 @@ function CalendarDropdown({
           </SelectItem>
         ))}
       </SelectContent>
-      <select
-        {...props}
-        value={selectedValue}
-        onChange={onChange}
-        disabled={disabled}
-        className="sr-only"
-        tabIndex={-1}
-        aria-hidden="true"
-      >
-        {options?.map((option) => (
-          <option key={option.value} value={option.value} disabled={option.disabled}>
-            {option.label}
-          </option>
-        ))}
-      </select>
     </Select>
   )
 }
@@ -285,7 +269,7 @@ function CalendarDayButton({
       data-hidden={modifiers.hidden || modifiers.outside}
       data-interactive={!modifiers.disabled && !modifiers.hidden && !modifiers.outside}
       className={cn(
-        "relative isolate z-10 flex size-10 min-w-10 items-center justify-center rounded-full border px-0 py-0 text-base leading-[1.4] font-normal",
+        "relative isolate z-10 flex size-10 min-w-10 cursor-pointer items-center justify-center rounded-full border px-0 py-0 text-base leading-[1.4] font-normal",
         "border-[#D9D9D9] bg-white text-[#1E1E1E]",
         "data-[interactive=true]:hover:border-[#46389C] data-[interactive=true]:hover:bg-[#5B49C5] data-[interactive=true]:hover:text-white",
         "data-[selected-single=true]:border-[#705BEF] data-[selected-single=true]:bg-[#705BEF] data-[selected-single=true]:text-white",

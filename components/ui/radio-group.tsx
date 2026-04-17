@@ -26,7 +26,7 @@ function RadioGroupItem({ className, fieldState = "default", ...props }: RadioGr
       data-slot="radio-group-item"
       data-field-state={fieldState}
       className={cn(
-        "group/radio relative size-4 rounded-full border border-[#1E1E1E] text-[#1E1E1E] outline-none",
+        "group/radio relative size-4 cursor-pointer rounded-full border border-[#1E1E1E] text-[#1E1E1E] outline-none",
         "disabled:cursor-not-allowed disabled:border-[#B3B3B3] disabled:text-[#B3B3B3]",
         className
       )}

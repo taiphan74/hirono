@@ -7,7 +7,7 @@ import { Switch as SwitchPrimitive } from "radix-ui"
 import { cn } from "@/lib/utils"
 
 const switchVariants = cva(
-  "peer inline-flex h-6 w-10 shrink-0 items-center rounded-full border transition-colors outline-none disabled:cursor-not-allowed",
+  "peer inline-flex h-6 w-10 shrink-0 cursor-pointer items-center rounded-full border transition-colors outline-none disabled:cursor-not-allowed",
   {
     variants: {
       state: {

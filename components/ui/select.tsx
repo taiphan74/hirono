@@ -6,7 +6,7 @@ import { Select as SelectPrimitive } from "radix-ui"
 import { cn } from "@/lib/utils"
 
 const selectTriggerVariants = cva(
-  "group/select flex h-10 min-w-[120px] items-center justify-between gap-2 rounded-[16px] border bg-white py-3 pl-4 pr-3 text-base leading-[1] text-[#1E1E1E] outline-none transition-colors disabled:cursor-not-allowed disabled:border-[#B3B3B3] disabled:bg-[#D9D9D9] disabled:text-[#B3B3B3] data-[placeholder]:text-[#B3B3B3]",
+  "group/select flex h-10 min-w-[120px] cursor-pointer items-center justify-between gap-2 rounded-[16px] border bg-white py-3 pl-4 pr-3 text-base leading-[1] text-[#1E1E1E] outline-none transition-colors disabled:cursor-not-allowed disabled:border-[#B3B3B3] disabled:bg-[#D9D9D9] disabled:text-[#B3B3B3] data-[placeholder]:text-[#B3B3B3]",
   {
     variants: {
       state: {
@@ -73,7 +73,7 @@ function SelectItem({ className, children, ...props }: React.ComponentProps<type
     <SelectPrimitive.Item
       data-slot="select-item"
       className={cn(
-        "relative flex w-full cursor-default items-center rounded-md py-0 text-base leading-[1.4] text-[#1E1E1E] outline-none focus:bg-black/5 data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+        "relative flex w-full cursor-pointer items-center rounded-md py-0 text-base leading-[1.4] text-[#1E1E1E] outline-none focus:bg-black/5 data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
         className
       )}
       {...props}

@@ -9,7 +9,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils"
 
 const datePickerTriggerVariants = cva(
-  "group/date-picker flex h-10 min-w-[120px] items-center gap-2 rounded-[16px] border bg-white px-4 py-3 text-base leading-[1] text-[#1E1E1E] outline-none transition-colors disabled:cursor-not-allowed disabled:bg-[#D9D9D9] disabled:text-[#B3B3B3]",
+  "group/date-picker flex h-10 min-w-[120px] cursor-pointer items-center gap-2 rounded-[16px] border bg-white px-4 py-3 text-base leading-[1] text-[#1E1E1E] outline-none transition-colors disabled:cursor-not-allowed disabled:bg-[#D9D9D9] disabled:text-[#B3B3B3]",
   {
     variants: {
       state: {
