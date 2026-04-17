@@ -3,6 +3,7 @@ import { IconButton } from "@/components/ui/icon-button";
 import { InputField } from "@/components/ui/input-field";
 import { SelectField } from "@/components/ui/select-field";
 import { DatePickerField } from "@/components/ui/date-picker-field";
+import { DateInputField } from "@/components/ui/date-input-field";
 import { RadioGroupField } from "@/components/ui/radio-group-field";
 import { SearchField } from "@/components/ui/search-field";
 import { SwitchField } from "@/components/ui/switch-field";
@@ -432,6 +433,58 @@ function DemoDatePickerMatrix(): React.JSX.Element {
   );
 }
 
+type DateInputState = "Default" | "Error" | "Disabled";
+type DateInputValueType = "Default" | "Placeholder";
+
+const dateInputStates: DateInputState[] = ["Default", "Error", "Disabled"];
+const dateInputValueTypes: DateInputValueType[] = ["Default", "Placeholder"];
+
+function DemoDateInputCell({
+  state,
+  valueType,
+}: {
+  state: DateInputState;
+  valueType: DateInputValueType;
+}): React.JSX.Element {
+  return (
+    <DateInputField
+      state={state === "Error" ? "error" : "default"}
+      disabled={state === "Disabled"}
+      valueType={valueType === "Default" ? "default" : "placeholder"}
+      label="Label"
+      description="Description"
+      error="Error"
+      day="DD"
+      month="MM"
+      year="YYYY"
+    />
+  );
+}
+
+function DemoDateInputMatrix(): React.JSX.Element {
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-[120px_repeat(2,minmax(240px,1fr))] items-center gap-4">
+        <div />
+        {dateInputValueTypes.map((type) => (
+          <div key={type} className="rounded-full bg-black/5 px-2 py-1 text-center text-xs text-black/70">
+            {type}
+          </div>
+        ))}
+      </div>
+
+      {dateInputStates.map((state) => (
+        <div key={state} className="grid grid-cols-[120px_repeat(2,minmax(240px,1fr))] items-start gap-4">
+          <span className="rounded-full bg-black/10 px-2 py-1 text-center text-[11px] text-black/70">{state}</span>
+          {dateInputValueTypes.map((valueType) => (
+            <DemoDateInputCell key={`${state}-${valueType}`} state={state} valueType={valueType} />
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 type RadioState = "Default" | "Disabled";
 type RadioValueType = "Default" | "Placeholder";
 
@@ -611,6 +664,15 @@ function HomeContent(): React.JSX.Element {
           </span>
         </div>
         <DemoDatePickerMatrix />
+      </Section>
+
+      <Section title="DateInput">
+        <div className="mb-4 flex items-center gap-2">
+          <span className="rounded-full bg-surface-primary-default px-2.5 py-1 text-xs text-white">
+            DateInput
+          </span>
+        </div>
+        <DemoDateInputMatrix />
       </Section>
 
       <Section title="RadioGroup">

@@ -1,3 +1,5 @@
+"use client"
+
 import * as React from "react"
 
 import { DatePickerTrigger } from "@/components/ui/date-picker"
@@ -27,6 +29,12 @@ function DatePickerField({
   value,
   placeholder = "Value",
 }: DatePickerFieldProps): React.JSX.Element {
+  const [localValue, setLocalValue] = React.useState(value)
+
+  React.useEffect(() => {
+    setLocalValue(value)
+  }, [value])
+
   return (
     <div className="flex min-w-[120px] flex-col items-start gap-2">
       <span className={cn("w-[120px] text-base leading-[1.4] text-[#1E1E1E]", disabled && "text-[#B3B3B3]")}>
@@ -41,8 +49,9 @@ function DatePickerField({
         state={state}
         disabled={disabled}
         valueType={valueType}
-        value={value}
+        value={localValue}
         placeholder={placeholder}
+        onValueChange={setLocalValue}
       />
 
       {state === "error" && (
