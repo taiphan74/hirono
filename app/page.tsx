@@ -8,6 +8,7 @@ import { RadioGroupField } from "@/components/ui/radio-group-field";
 import { SearchField } from "@/components/ui/search-field";
 import { SwitchField } from "@/components/ui/switch-field";
 import { ChevronRight, Navigation } from "lucide-react";
+import Link from "next/link";
 
 type DemoVariant =
   | "primary"
@@ -708,7 +709,12 @@ function HomeContent(): React.JSX.Element {
 export default function Home(): React.JSX.Element {
   return (
     <div className="min-h-screen bg-surface-default-default p-6 md:p-10">
-      <main className="mx-auto max-w-6xl rounded-xl border border-dashed border-black/25 bg-white/40 p-6 md:p-8">
+      <main className="mx-auto max-w-6xl space-y-6 rounded-xl border border-dashed border-black/25 bg-white/40 p-6 md:p-8">
+        <div className="flex justify-end">
+          <Button asChild variant="primary" size="md">
+            <Link href="/landing">Go to landing</Link>
+          </Button>
+        </div>
         <HomeContent />
       </main>
     </div>
