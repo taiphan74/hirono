@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { IconButton } from "@/components/ui/icon-button";
+import { Avatar } from "@/components/ui/avatar";
 import { InputField } from "@/components/ui/input-field";
 import { SelectField } from "@/components/ui/select-field";
 import { DatePickerField } from "@/components/ui/date-picker-field";
@@ -627,6 +628,66 @@ function DemoSwitchMatrix(): React.JSX.Element {
   );
 }
 
+type AvatarTypeDemo = "image" | "initial" | "subtract";
+type AvatarShapeDemo = "circle" | "square";
+type AvatarSizeDemo = "lg" | "md" | "sm";
+
+const avatarTypes: AvatarTypeDemo[] = ["image", "initial", "subtract"];
+const avatarShapes: AvatarShapeDemo[] = ["circle", "square"];
+const avatarSizes: AvatarSizeDemo[] = ["lg", "md", "sm"];
+
+function DemoAvatarCell({
+  type,
+  shape,
+  size,
+}: {
+  type: AvatarTypeDemo;
+  shape: AvatarShapeDemo;
+  size: AvatarSizeDemo;
+}): React.JSX.Element {
+  if (type === "image") {
+    return (
+      <Avatar
+        type="image"
+        shape={shape}
+        size={size}
+        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&q=80"
+        alt="Avatar sample"
+      />
+    );
+  }
+
+  if (type === "subtract") {
+    return <Avatar type="subtract" shape={shape} size={size} />;
+  }
+
+  return <Avatar type="initial" shape={shape} size={size} initial="A" />;
+}
+
+function DemoAvatarMatrix(): React.JSX.Element {
+  return (
+    <div className="space-y-6">
+      {avatarShapes.map((shape) => (
+        <div key={shape} className="space-y-3">
+          <span className="rounded-full bg-black/10 px-2 py-1 text-[11px] text-black/70">{shape}</span>
+
+          {avatarTypes.map((type) => (
+            <div key={`${shape}-${type}`} className="grid grid-cols-[120px_repeat(3,minmax(56px,auto))] items-center gap-4">
+              <span className="rounded-full bg-black/5 px-2 py-1 text-center text-xs text-black/70">{type}</span>
+              {avatarSizes.map((size) => (
+                <div key={`${shape}-${type}-${size}`} className="flex items-center gap-2">
+                  <DemoAvatarCell type={type} shape={shape} size={size} />
+                  <span className="text-[11px] text-black/50">{size}</span>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function HomeContent(): React.JSX.Element {
   return (
     <>
@@ -701,6 +762,15 @@ function HomeContent(): React.JSX.Element {
           </span>
         </div>
         <DemoSwitchMatrix />
+      </Section>
+
+      <Section title="Avatar">
+        <div className="mb-4 flex items-center gap-2">
+          <span className="rounded-full bg-surface-primary-default px-2.5 py-1 text-xs text-white">
+            Avatar
+          </span>
+        </div>
+        <DemoAvatarMatrix />
       </Section>
     </>
   );
