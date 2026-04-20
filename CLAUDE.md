@@ -34,6 +34,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - After regenerating shadcn `calendar.tsx`, replace `Button` props `variant="ghost"` / `size="icon"` with supported project variants/sizes (e.g. `variant="subtle"`, `size="md"`) to pass TypeScript build.
 - For interactive demo fields, avoid hard-binding display state to static props; keep local state in `*-field` wrappers and sync from props via `useEffect` only when prop changes.
 - Any `components/ui/*-field.tsx` file that uses React hooks (`useState`, `useEffect`) must include `"use client"` at the top.
+- `next/dynamic` with `{ ssr: false }` is invalid in Server Components on Next.js 16; wrap it in a `"use client"` intermediary component (e.g., `LandingNebulaLayer`).
+- For full-screen visual backgrounds inside a `relative` container with gradient/bg, avoid negative z-index (`-z-10`) on the effect layer; use `z-0` and keep foreground content at `z-10`.
+- For particle/visual init in React components, avoid `Math.random()` inside render/memo paths; prefer deterministic seeded generators to satisfy `react-hooks/purity`.
 
 ### Tests
 
