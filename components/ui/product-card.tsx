@@ -1,32 +1,10 @@
 "use client";
 
 import * as React from "react";
-import NextImage from "next/image";
+import { ChevronRight, Navigation } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { cva, type VariantProps } from "class-variance-authority";
-
-// Badge variant styles
-const badgeVariants = cva(
-  "inline-flex items-center rounded-full px-2 py-1 text-xs font-medium",
-  {
-    variants: {
-      variant: {
-        default: "bg-gray-100 text-gray-800",
-        new: "bg-green-100 text-green-800",
-        sale: "bg-red-100 text-red-800",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-    },
-  }
-);
-
-export interface ProductCardBadgeProps
-  extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof badgeVariants> {
-  children: React.ReactNode;
-}
 
 type ProductCardRootProps = React.HTMLAttributes<HTMLDivElement>;
 
@@ -35,7 +13,7 @@ const ProductCardRoot = React.forwardRef<HTMLDivElement, ProductCardRootProps>(
     <div
       ref={ref}
       className={cn(
-        "w-[300px] min-w-[240px] h-[405px] bg-white border border-[#D9D9D9] rounded-2xl p-8 gap-6 flex flex-col items-center",
+        "flex w-[300px] min-w-[240px] flex-col items-center gap-6 overflow-hidden rounded-2xl border border-[#D9D9D9] bg-white p-8",
         className
       )}
       {...props}
@@ -44,40 +22,18 @@ const ProductCardRoot = React.forwardRef<HTMLDivElement, ProductCardRootProps>(
 );
 ProductCardRoot.displayName = "ProductCard.Root";
 
-export interface ProductCardImageProps {
-  src: string;
-  alt?: string;
-  className?: string;
-}
+type ProductCardTopProps = React.HTMLAttributes<HTMLDivElement>;
 
-const ProductCardImage = React.forwardRef<HTMLImageElement, ProductCardImageProps>(
-  ({ src, alt = "", className }, ref) => (
-    <div className="relative w-full aspect-square overflow-hidden rounded-md">
-      <NextImage
-        ref={ref}
-        src={src}
-        alt={alt}
-        fill
-        className={cn("object-cover", className)}
-        sizes="(max-width: 300px) 300px, 300px"
-      />
-    </div>
-  )
-);
-ProductCardImage.displayName = "ProductCard.Image";
-
-const ProductCardBadge = React.forwardRef<HTMLDivElement, ProductCardBadgeProps>(
-  ({ children, variant, className, ...props }, ref) => (
+const ProductCardTop = React.forwardRef<HTMLDivElement, ProductCardTopProps>(
+  ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn(badgeVariants({ variant }), className)}
+      className={cn("flex w-full flex-col items-center justify-end gap-4", className)}
       {...props}
-    >
-      {children}
-    </div>
+    />
   )
 );
-ProductCardBadge.displayName = "ProductCard.Badge";
+ProductCardTop.displayName = "ProductCard.Top";
 
 export interface ProductCardTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
   children: React.ReactNode;
@@ -87,7 +43,7 @@ const ProductCardTitle = React.forwardRef<HTMLHeadingElement, ProductCardTitlePr
   ({ children, className, ...props }, ref) => (
     <h3
       ref={ref}
-      className={cn("text-lg font-semibold text-center", className)}
+      className={cn("text-2xl font-semibold leading-[1.2] tracking-[-0.48px] text-[#111316]", className)}
       {...props}
     >
       {children}
@@ -97,42 +53,93 @@ const ProductCardTitle = React.forwardRef<HTMLHeadingElement, ProductCardTitlePr
 ProductCardTitle.displayName = "ProductCard.Title";
 
 export interface ProductCardPriceProps extends React.HTMLAttributes<HTMLDivElement> {
-  children: React.ReactNode;
+  amount?: React.ReactNode;
+  currency?: React.ReactNode;
+  label?: React.ReactNode;
+  showLabel?: boolean;
 }
 
 const ProductCardPrice = React.forwardRef<HTMLDivElement, ProductCardPriceProps>(
-  ({ children, className, ...props }, ref) => (
+  ({ amount = "50", currency = "$", label = "/ mo", showLabel = true, className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn("text-xl font-bold text-center", className)}
+      className={cn("flex items-end justify-center whitespace-nowrap text-[#111316]", className)}
       {...props}
     >
-      {children}
+      <div className="flex items-start leading-[1.2]">
+        <span className="text-2xl font-semibold tracking-[-0.48px]">{currency}</span>
+        <span className="text-5xl font-bold tracking-[-1.44px]">{amount}</span>
+      </div>
+      {showLabel ? <span className="text-base leading-[1.4]">{label}</span> : null}
     </div>
   )
 );
 ProductCardPrice.displayName = "ProductCard.Price";
 
-export interface ProductCardDescriptionProps extends React.HTMLAttributes<HTMLParagraphElement> {
+export interface ProductCardFeatureListProps extends React.HTMLAttributes<HTMLUListElement> {
   children: React.ReactNode;
 }
 
-const ProductCardDescription = React.forwardRef<HTMLParagraphElement, ProductCardDescriptionProps>(
+const ProductCardFeatureList = React.forwardRef<HTMLUListElement, ProductCardFeatureListProps>(
   ({ children, className, ...props }, ref) => (
-    <p
-      ref={ref}
-      className={cn("text-sm text-gray-600 text-center", className)}
-      {...props}
-    >
+    <ul ref={ref} className={cn("flex w-full flex-col gap-3 text-[#556070]", className)} {...props}>
       {children}
-    </p>
+    </ul>
   )
 );
-ProductCardDescription.displayName = "ProductCard.Description";
+ProductCardFeatureList.displayName = "ProductCard.FeatureList";
+
+export interface ProductCardFeatureItemProps extends React.LiHTMLAttributes<HTMLLIElement> {
+  children: React.ReactNode;
+}
+
+const ProductCardFeatureItem = React.forwardRef<HTMLLIElement, ProductCardFeatureItemProps>(
+  ({ children, className, ...props }, ref) => (
+    <li ref={ref} className={cn("ms-6 list-disc text-base leading-[1.4]", className)} {...props}>
+      {children}
+    </li>
+  )
+);
+ProductCardFeatureItem.displayName = "ProductCard.FeatureItem";
+
+type ProductCardActionProps = React.ComponentProps<typeof Button> & {
+  startIcon?: React.ReactNode;
+  endIcon?: React.ReactNode;
+};
+
+const ProductCardAction = React.forwardRef<HTMLButtonElement, ProductCardActionProps>(
+  (
+    {
+      children = "Link",
+      startIcon = <Navigation className="size-4" />,
+      endIcon = <ChevronRight className="size-4" />,
+      className,
+      variant = "primary",
+      size = "md",
+      ...props
+    },
+    ref
+  ) => (
+    <Button
+      ref={ref}
+      variant={variant}
+      size={size}
+      data-icon="inline-start"
+      className={cn("w-full justify-center", className)}
+      {...props}
+    >
+      {startIcon}
+      <span>{children}</span>
+      {endIcon}
+    </Button>
+  )
+);
+ProductCardAction.displayName = "ProductCard.Action";
 
 export const Root = ProductCardRoot;
-export const Image = ProductCardImage;
-export const Badge = ProductCardBadge;
+export const Top = ProductCardTop;
 export const Title = ProductCardTitle;
 export const Price = ProductCardPrice;
-export const Description = ProductCardDescription;
+export const FeatureList = ProductCardFeatureList;
+export const FeatureItem = ProductCardFeatureItem;
+export const Action = ProductCardAction;

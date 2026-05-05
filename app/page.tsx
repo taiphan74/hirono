@@ -897,11 +897,20 @@ function HomeContent(): React.JSX.Element {
         </div>
         <div className="flex flex-wrap gap-6">
           <ProductCard.Root>
-            <ProductCard.Image src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=300&fit=crop" alt="Product" />
-            <ProductCard.Badge variant="new">New</ProductCard.Badge>
-            <ProductCard.Title>Product Name</ProductCard.Title>
-            <ProductCard.Price>$99.99</ProductCard.Price>
-            <ProductCard.Description>Short product description</ProductCard.Description>
+            <ProductCard.Top>
+              <ProductCard.Title>Title</ProductCard.Title>
+              <ProductCard.Price amount="50" currency="$" label="/ mo" />
+              <ProductCard.FeatureList>
+                <ProductCard.FeatureItem>List item</ProductCard.FeatureItem>
+                <ProductCard.FeatureItem>List item</ProductCard.FeatureItem>
+                <ProductCard.FeatureItem>List item</ProductCard.FeatureItem>
+                <ProductCard.FeatureItem>List item</ProductCard.FeatureItem>
+                <ProductCard.FeatureItem>List item</ProductCard.FeatureItem>
+                <ProductCard.FeatureItem>List item</ProductCard.FeatureItem>
+                <ProductCard.FeatureItem>List item</ProductCard.FeatureItem>
+              </ProductCard.FeatureList>
+            </ProductCard.Top>
+            <ProductCard.Action>Link</ProductCard.Action>
           </ProductCard.Root>
         </div>
       </Section>
