@@ -130,7 +130,7 @@ const ProductCardDescription = React.forwardRef<HTMLParagraphElement, ProductCar
 );
 ProductCardDescription.displayName = "ProductCard.Description";
 
-export const ProductCard = {
+export default {
   Root: ProductCardRoot,
   Image: ProductCardImage,
   Badge: ProductCardBadge,
@@ -138,5 +138,3 @@ export const ProductCard = {
   Price: ProductCardPrice,
   Description: ProductCardDescription,
 };
-
-export default ProductCard;
