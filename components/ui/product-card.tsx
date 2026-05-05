@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import Image from "next/image";
+import NextImage from "next/image";
 import { cn } from "@/lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 
@@ -53,7 +53,7 @@ export interface ProductCardImageProps {
 const ProductCardImage = React.forwardRef<HTMLImageElement, ProductCardImageProps>(
   ({ src, alt = "", className }, ref) => (
     <div className="relative w-full aspect-square overflow-hidden rounded-md">
-      <Image
+      <NextImage
         ref={ref}
         src={src}
         alt={alt}
