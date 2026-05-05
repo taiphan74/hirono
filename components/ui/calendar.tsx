@@ -100,7 +100,7 @@ function Calendar({
           "flex-1 rounded-(--cell-radius) text-[0.8rem] font-normal text-muted-foreground select-none",
           defaultClassNames.weekday
         ),
-        week: cn("mt-2 flex w-full", defaultClassNames.week),
+        week: cn("mt-2 flex w-full gap-2", defaultClassNames.week),
         week_number_header: cn(
           "w-(--cell-size) select-none",
           defaultClassNames.week_number_header
@@ -269,15 +269,24 @@ function CalendarDayButton({
       data-hidden={modifiers.hidden || modifiers.outside}
       data-interactive={!modifiers.disabled && !modifiers.hidden && !modifiers.outside}
       className={cn(
-        "relative isolate z-10 flex size-10 min-w-10 cursor-pointer items-center justify-center rounded-full border px-0 py-0 text-base leading-[1.4] font-normal",
-        "border-[#D9D9D9] bg-white text-[#1E1E1E]",
-        "data-[interactive=true]:hover:border-[#46389C] data-[interactive=true]:hover:bg-[#5B49C5] data-[interactive=true]:hover:text-white",
-        "data-[selected-single=true]:border-[#705BEF] data-[selected-single=true]:bg-[#705BEF] data-[selected-single=true]:text-white",
-        "data-[range-middle=true]:rounded-none data-[range-middle=true]:border-[#C6BDF9] data-[range-middle=true]:bg-[#E2DEFC] data-[range-middle=true]:text-[#1E1E1E]",
-        "data-[range-start=true]:rounded-l-(--cell-radius) data-[range-start=true]:border-[#705BEF] data-[range-start=true]:bg-[#705BEF] data-[range-start=true]:text-white",
-        "data-[range-end=true]:rounded-r-(--cell-radius) data-[range-end=true]:border-[#705BEF] data-[range-end=true]:bg-[#705BEF] data-[range-end=true]:text-white",
-        "data-[disabled=true]:pointer-events-none data-[disabled=true]:border-[#D9D9D9] data-[disabled=true]:bg-white data-[disabled=true]:text-[#B3B3B3]",
-        "data-[hidden=true]:pointer-events-none data-[hidden=true]:border-[#D9D9D9] data-[hidden=true]:bg-white data-[hidden=true]:text-[#B3B3B3] data-[hidden=true]:opacity-50",
+        "relative isolate z-10 flex size-10 min-w-10 cursor-pointer items-center justify-center border px-0 py-0 text-base leading-[1.4] font-normal rounded-lg",
+        // Default state
+        "border-[#D9D9D9] bg-white text-[#111316]",
+        // Hover state
+        "data-[interactive=true]:hover:border-[#402BBF] data-[interactive=true]:hover:bg-[#402BBF] data-[interactive=true]:hover:text-white",
+        // Selected (active) state
+        "data-[selected-single=true]:border-[#5036EF] data-[selected-single=true]:bg-[#5036EF] data-[selected-single=true]:text-white",
+        // Disabled state
+        "data-[disabled=true]:pointer-events-none data-[disabled=true]:border-[#D5D8DD] data-[disabled=true]:bg-white data-[disabled=true]:text-[#959CA6]",
+        // Hidden/Outside state
+        "data-[hidden=true]:pointer-events-none data-[hidden=true]:border-0 data-[hidden=true]:bg-white data-[hidden=true]:text-[#959CA6] data-[hidden=true]:opacity-50",
+        // Range middle state
+        "data-[range-middle=true]:border-[#EDEBFD] data-[range-middle=true]:bg-[#EDEBFD] data-[range-middle=true]:text-[#111316]",
+        // Range start state
+        "data-[range-start=true]:border-[#5036EF] data-[range-start=true]:bg-[#5036EF] data-[range-start=true]:text-white",
+        // Range end state
+        "data-[range-end=true]:border-[#5036EF] data-[range-end=true]:bg-[#5036EF] data-[range-end=true]:text-white",
+        // Focus state (preserved from original)
         "group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-[3px] group-data-[focused=true]/day:ring-ring/50",
         defaultClassNames.day,
         className
