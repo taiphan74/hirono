@@ -1,4 +1,4 @@
-import ProductCard from "@/components/ui/product-card";
+import * as ProductCard from "@/components/ui/product-card";
 
 const sampleImage = "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=300&fit=crop";
 
