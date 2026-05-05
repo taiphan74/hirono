@@ -12,7 +12,7 @@ import { SingleCombobox, type ComboboxOption } from "@/components/ui/single-comb
 import { MultiCombobox } from "@/components/ui/multi-combobox";
 import { ChevronRight, Navigation, User, Building2, Briefcase } from "lucide-react";
 import Link from "next/link";
-import { ProductCard } from "@/components/ui/product-card";
+import ProductCard from "@/components/ui/product-card";
 
 type DemoVariant =
   | "primary"
