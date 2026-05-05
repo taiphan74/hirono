@@ -12,6 +12,7 @@ import { SingleCombobox, type ComboboxOption } from "@/components/ui/single-comb
 import { MultiCombobox } from "@/components/ui/multi-combobox";
 import { ChevronRight, Navigation, User, Building2, Briefcase } from "lucide-react";
 import Link from "next/link";
+import { ProductCard } from "@/components/ui/product-card";
 
 type DemoVariant =
   | "primary"
@@ -886,6 +887,23 @@ function HomeContent(): React.JSX.Element {
           </span>
         </div>
         <DemoAvatarMatrix />
+      </Section>
+
+      <Section title="ProductCard">
+        <div className="mb-4 flex items-center gap-2">
+          <span className="rounded-full bg-surface-primary-default px-2.5 py-1 text-xs text-white">
+            ProductCard
+          </span>
+        </div>
+        <div className="flex flex-wrap gap-6">
+          <ProductCard.Root>
+            <ProductCard.Image src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=300&fit=crop" alt="Product" />
+            <ProductCard.Badge variant="new">New</ProductCard.Badge>
+            <ProductCard.Title>Product Name</ProductCard.Title>
+            <ProductCard.Price>$99.99</ProductCard.Price>
+            <ProductCard.Description>Short product description</ProductCard.Description>
+          </ProductCard.Root>
+        </div>
       </Section>
     </>
   );
