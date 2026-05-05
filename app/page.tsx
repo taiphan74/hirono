@@ -8,7 +8,9 @@ import { DateInputField } from "@/components/ui/date-input-field";
 import { RadioGroupField } from "@/components/ui/radio-group-field";
 import { SearchField } from "@/components/ui/search-field";
 import { SwitchField } from "@/components/ui/switch-field";
-import { ChevronRight, Navigation } from "lucide-react";
+import { SingleCombobox, type ComboboxOption } from "@/components/ui/single-combobox";
+import { MultiCombobox } from "@/components/ui/multi-combobox";
+import { ChevronRight, Navigation, User, Building2, Briefcase } from "lucide-react";
 import Link from "next/link";
 
 type DemoVariant =
@@ -628,6 +630,110 @@ function DemoSwitchMatrix(): React.JSX.Element {
   );
 }
 
+type ComboboxDemoState = "Unselected" | "Active" | "Selected" | "Disable";
+type ComboboxDemoType = "Default_Label" | "Default_Label_List" | "Multiple_Choices" | "Icon";
+
+const comboboxDemoStates: ComboboxDemoState[] = ["Unselected", "Active", "Selected", "Disable"];
+const comboboxDemoTypes: ComboboxDemoType[] = ["Default_Label", "Default_Label_List", "Multiple_Choices", "Icon"];
+
+const singleComboboxLabelOptions: ComboboxOption[] = [
+  { value: "design", label: "Design" },
+  { value: "engineering", label: "Engineering" },
+  { value: "marketing", label: "Marketing" },
+  { value: "ops", label: "Operations" },
+];
+
+const singleComboboxLabelListOptions: ComboboxOption[] = [
+  { value: "foundation-grid", label: "Grid", group: "Foundations" },
+  { value: "foundation-color", label: "Color", group: "Foundations" },
+  { value: "component-button", label: "Button", group: "Components" },
+  { value: "component-combobox", label: "Combobox", group: "Components" },
+];
+
+const singleComboboxIconOptions: ComboboxOption[] = [
+  { value: "user", label: "User", icon: <User className="size-4" /> },
+  { value: "company", label: "Company", icon: <Building2 className="size-4" /> },
+  { value: "role", label: "Role", icon: <Briefcase className="size-4" /> },
+];
+
+const multiComboboxOptions: ComboboxOption[] = [
+  { value: "dev", label: "Dev" },
+  { value: "design", label: "Design" },
+  { value: "product", label: "Product" },
+  { value: "qa", label: "QA" },
+];
+
+function DemoComboboxCell({
+  state,
+  type,
+}: {
+  state: ComboboxDemoState;
+  type: ComboboxDemoType;
+}): React.JSX.Element {
+  const isDisabled = state === "Disable";
+  const isActive = state === "Active";
+  const isSelected = state === "Selected";
+
+  if (type === "Multiple_Choices") {
+    return (
+      <MultiCombobox
+        options={multiComboboxOptions}
+        placeholder="Add categories"
+        defaultOpen={isActive}
+        defaultValues={isSelected ? ["dev", "design"] : undefined}
+        disabled={isDisabled}
+      />
+    );
+  }
+
+  const options =
+    type === "Default_Label"
+      ? singleComboboxLabelOptions
+      : type === "Default_Label_List"
+        ? singleComboboxLabelListOptions
+        : singleComboboxIconOptions;
+
+  const variant =
+    type === "Default_Label" ? "label" : type === "Default_Label_List" ? "labelList" : "icon";
+
+  return (
+    <SingleCombobox
+      options={options}
+      variant={variant}
+      placeholder="Select option"
+      defaultOpen={isActive}
+      defaultValue={isSelected ? options[0]?.value : undefined}
+      disabled={isDisabled}
+    />
+  );
+}
+
+function DemoComboboxMatrix(): React.JSX.Element {
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-[220px_repeat(4,minmax(320px,1fr))] items-center gap-4">
+        <div />
+        {comboboxDemoStates.map((state) => (
+          <div key={state} className="rounded-full bg-black/5 px-2 py-1 text-center text-xs text-black/70">
+            {state}
+          </div>
+        ))}
+      </div>
+
+      {comboboxDemoTypes.map((type) => (
+        <div key={type} className="grid grid-cols-[220px_repeat(4,minmax(320px,1fr))] items-start gap-4">
+          <span className="rounded-full bg-black/10 px-2 py-1 text-center text-[11px] text-black/70">
+            {type}
+          </span>
+          {comboboxDemoStates.map((state) => (
+            <DemoComboboxCell key={`${type}-${state}`} type={type} state={state} />
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 type AvatarTypeDemo = "image" | "initial" | "subtract";
 type AvatarShapeDemo = "circle" | "square";
 type AvatarSizeDemo = "lg" | "md" | "sm";
@@ -762,6 +868,15 @@ function HomeContent(): React.JSX.Element {
           </span>
         </div>
         <DemoSwitchMatrix />
+      </Section>
+
+      <Section title="Combobox">
+        <div className="mb-4 flex items-center gap-2">
+          <span className="rounded-full bg-surface-primary-default px-2.5 py-1 text-xs text-white">
+            Combobox
+          </span>
+        </div>
+        <DemoComboboxMatrix />
       </Section>
 
       <Section title="Avatar">
