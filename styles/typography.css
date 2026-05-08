@@ -1,0 +1,40 @@
+/* Typography Primitives */
+:root {
+  /* Font Families */
+  --font-sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-serif: "Noto Serif", Georgia, "Times New Roman", serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  /* Font Weight Variables (mapped to standard CSS weights) */
+  --font-weight-thin: 100;
+  --font-weight-extralight: 200;
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --font-weight-black: 900;
+}
+
+/* Utility classes for font weights (optional, but useful) */
+.font-thin { font-weight: var(--font-weight-thin); }
+.font-extralight { font-weight: var(--font-weight-extralight); }
+.font-light { font-weight: var(--font-weight-light); }
+.font-regular { font-weight: var(--font-weight-regular); }
+.font-medium { font-weight: var(--font-weight-medium); }
+.font-semibold { font-weight: var(--font-weight-semibold); }
+.font-bold { font-weight: var(--font-weight-bold); }
+.font-extrabold { font-weight: var(--font-weight-extrabold); }
+.font-black { font-weight: var(--font-weight-black); }
+
+/* Italic variants using font-style */
+.italic-thin { font-style: italic; font-weight: var(--font-weight-thin); }
+.italic-extralight { font-style: italic; font-weight: var(--font-weight-extralight); }
+.italic-light { font-style: italic; font-weight: var(--font-weight-light); }
+.italic-regular { font-style: italic; font-weight: var(--font-weight-regular); }
+.italic-medium { font-style: italic; font-weight: var(--font-weight-medium); }
+.italic-semibold { font-style: italic; font-weight: var(--font-weight-semibold); }
+.italic-bold { font-style: italic; font-weight: var(--font-weight-bold); }
+.italic-extrabold { font-style: italic; font-weight: var(--font-weight-extrabold); }
+.italic-black { font-style: italic; font-weight: var(--font-weight-black); }

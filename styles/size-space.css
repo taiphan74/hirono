@@ -1,0 +1,32 @@
+/* Size & Space Primitives */
+:root {
+  /* Size tokens (px) */
+  --size-01: 300px;
+  --size-02: 350px;
+  --size-03: 400px;
+  --size-04: 500px;
+  --size-05: 600px;
+  --size-06: 800px;
+  --size-07: 900px;
+  --size-08: 1000px;
+  --size-09: 1100px;
+  --size-10: 1400px;
+
+  /* Space tokens (px) */
+  --space-tiny-xs: 100px;
+  --space-sm: 200px;
+  --space-md: 300px;
+  --space-lg: 400px;
+  --space-heading: 600px;
+}
+
+/* Optional utility classes (can be used directly) */
+.size-01 { width: var(--size-01); height: auto; }
+.size-02 { width: var(--size-02); height: auto; }
+/* ... add more if needed */
+
+.space-tiny-xs { margin: var(--space-tiny-xs); padding: var(--space-tiny-xs); }
+.space-sm { margin: var(--space-sm); padding: var(--space-sm); }
+.space-md { margin: var(--space-md); padding: var(--space-md); }
+.space-lg { margin: var(--space-lg); padding: var(--space-lg); }
+.space-heading { margin: var(--space-heading); padding: var(--space-heading); }
