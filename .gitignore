@@ -51,3 +51,5 @@ next-env.d.ts
 GEMINI.md
 docs/
 .playwright-mcp/
+.agents/
+skills-lock.json
