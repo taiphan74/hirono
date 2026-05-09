@@ -17,9 +17,6 @@ export {
   WorkspaceCardDescription,
   WorkspaceCardMenuItem,
   WorkspaceCardMenuSeparator,
-  WorkspaceCardMenuSubTrigger,
-  WorkspaceCardMenuSubContent,
-  WorkspaceCardMenuSub,
 } from "./components/workspace-card"
 export type { WorkspaceCardRootProps } from "./components/workspace-card"
 export type { WorkspaceCardImageProps } from "./components/workspace-card"
@@ -33,7 +30,4 @@ export type {
 } from "./components/workspace-card"
 export type {
   WorkspaceCardMenuItemProps,
-  WorkspaceCardMenuSubTriggerProps,
-  WorkspaceCardMenuSubContentProps,
-  WorkspaceCardMenuSubProps,
 } from "./components/workspace-card"

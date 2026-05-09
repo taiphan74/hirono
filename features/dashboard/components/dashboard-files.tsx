@@ -13,32 +13,21 @@ import {
   WorkspaceCardDescription,
   WorkspaceCardMenuItem,
   WorkspaceCardMenuSeparator,
-  WorkspaceCardMenuSub,
-  WorkspaceCardMenuSubTrigger,
-  WorkspaceCardMenuSubContent,
 } from "./workspace-card"
 import type { WorkspaceCardType } from "./workspace-card/workspace-card-icon-box"
 
 function DefaultMenu() {
   return (
     <>
-      <WorkspaceCardMenuItem>Rename</WorkspaceCardMenuItem>
-      <WorkspaceCardMenuItem>Duplicate</WorkspaceCardMenuItem>
-      <WorkspaceCardMenuSub>
-        <WorkspaceCardMenuSubTrigger>Move to folder</WorkspaceCardMenuSubTrigger>
-        <WorkspaceCardMenuSubContent>
-          <WorkspaceCardMenuItem>Design</WorkspaceCardMenuItem>
-          <WorkspaceCardMenuItem>Marketing</WorkspaceCardMenuItem>
-        </WorkspaceCardMenuSubContent>
-      </WorkspaceCardMenuSub>
-      <WorkspaceCardMenuSeparator />
+      <WorkspaceCardMenuItem>Open</WorkspaceCardMenuItem>
       <WorkspaceCardMenuItem>Open in new tab</WorkspaceCardMenuItem>
+      <WorkspaceCardMenuItem>Rename</WorkspaceCardMenuItem>
+      <WorkspaceCardMenuSeparator />
       <WorkspaceCardMenuItem>Copy link</WorkspaceCardMenuItem>
       <WorkspaceCardMenuItem>Share</WorkspaceCardMenuItem>
+      <WorkspaceCardMenuItem>Duplicate</WorkspaceCardMenuItem>
       <WorkspaceCardMenuSeparator />
-      <WorkspaceCardMenuItem>Export as PDF</WorkspaceCardMenuItem>
-      <WorkspaceCardMenuItem>Download</WorkspaceCardMenuItem>
-      <WorkspaceCardMenuItem>Delete</WorkspaceCardMenuItem>
+      <WorkspaceCardMenuItem>Move to trash</WorkspaceCardMenuItem>
     </>
   )
 }

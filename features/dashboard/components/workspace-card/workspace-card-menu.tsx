@@ -90,7 +90,7 @@ const WorkspaceCardMenuSubContent = React.forwardRef<
   <ContextMenuSubContent
     ref={ref as any}
     className={cn(
-      "w-[260px] max-w-[320px] rounded-lg border border-[#D5D8DD] bg-white p-1 shadow-[0px_1px_4px_rgba(12,12,13,0.05),0px_1px_4px_rgba(12,12,13,0.1)]",
+      "w-[260px] max-w-[320px] rounded-lg border border-[#D5D8DD] bg-white py-1 pr-1 pl-0 shadow-[0px_1px_4px_rgba(12,12,13,0.05),0px_1px_4px_rgba(12,12,13,0.1)]",
       className
     )}
     {...(props as any)}

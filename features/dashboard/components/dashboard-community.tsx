@@ -3,6 +3,7 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
 import { ChevronRight, CornerUpRight } from "lucide-react"
+import { Avatar } from "@/components/ui/avatar"
 
 interface CommunityTemplate {
   id: string
@@ -58,9 +59,13 @@ function CommunityCard({ template }: { template: CommunityTemplate }) {
       </div>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3 min-w-0">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#5036EF] text-sm font-semibold text-white">
-            {initials}
-          </div>
+          <Avatar
+            type={template.avatarSrc ? "image" : "initial"}
+            src={template.avatarSrc}
+            initial={initials}
+            size="lg"
+            className="bg-[#5036EF] text-sm font-semibold text-white [&_span]:text-sm [&_span]:font-semibold [&_span]:text-white"
+          />
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-semibold leading-[1.4] text-[#111316]">
               {template.title}
