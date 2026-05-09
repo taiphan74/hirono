@@ -3,6 +3,6 @@
 
 import { DesignFlow } from "@/features/design";
 
-export default function DesignPage() {
+export default function WorkspacePage() {
   return <DesignFlow />;
 }

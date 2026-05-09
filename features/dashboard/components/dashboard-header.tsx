@@ -16,7 +16,7 @@ interface DashboardHeaderProps {
 }
 
 const defaultActions: HeaderAction[] = [
-  { icon: PenTool, label: "Design", href: "/home/design" },
+  { icon: PenTool, label: "Design", href: "/dashboard/workspace" },
   { icon: FileText, label: "Note", href: "/home/note" },
   { icon: Presentation, label: "Slide", href: "/home/slide" },
 ]

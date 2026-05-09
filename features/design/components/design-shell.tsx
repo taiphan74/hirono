@@ -31,22 +31,22 @@ const menuItems = [
   {
     title: "Dashboard",
     icon: LayoutDashboard,
-    href: "/design",
+    href: "/dashboard/workspace",
   },
   {
     title: "Projects",
     icon: FolderKanban,
-    href: "/design/projects",
+    href: "/dashboard/workspace/projects",
   },
   {
     title: "Settings",
     icon: Settings,
-    href: "/design/settings",
+    href: "/dashboard/workspace/settings",
   },
   {
     title: "Help",
     icon: HelpCircle,
-    href: "/design/help",
+    href: "/dashboard/workspace/help",
   },
 ]
 
@@ -57,7 +57,7 @@ function FloatingSidebar() {
   const collapsed = state === "collapsed"
 
   const isActive = (href: string) => {
-    if (href === "/design") return pathname === "/design"
+    if (href === "/dashboard/workspace") return pathname === "/dashboard/workspace"
     return pathname === href || pathname.startsWith(`${href}/`)
   }
 

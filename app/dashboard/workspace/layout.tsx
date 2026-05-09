@@ -1,6 +1,6 @@
 import { DesignShell } from "@/features/design/components/design-shell"
 
-export default function DesignLayout({
+export default function WorkspaceLayout({
   children,
 }: {
   children: React.ReactNode
