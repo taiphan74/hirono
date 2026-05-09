@@ -66,15 +66,27 @@ export function DashboardFiles({ files, className }: DashboardFilesProps) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    dashboardService
-      .getWorkspaces()
-      .then((res) => {
-        if (res.status === "SUCCESS") {
-          setWorkspaces(res.data)
-        }
-      })
-      .catch(console.error)
-      .finally(() => setLoading(false))
+    const fetchWorkspaces = () => {
+      dashboardService
+        .getWorkspaces()
+        .then((res) => {
+          if (res.status === "SUCCESS") {
+            setWorkspaces(res.data)
+          }
+        })
+        .catch(console.error)
+        .finally(() => setLoading(false))
+    }
+
+    fetchWorkspaces()
+
+    const handleWorkspaceCreated = () => {
+      setLoading(true)
+      fetchWorkspaces()
+    }
+
+    window.addEventListener("workspace-created", handleWorkspaceCreated)
+    return () => window.removeEventListener("workspace-created", handleWorkspaceCreated)
   }, [])
 
   const displayFiles: FileItem[] =
