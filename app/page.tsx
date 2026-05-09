@@ -14,6 +14,7 @@ import { MultiCombobox } from "@/components/ui/multi-combobox";
 import { ChevronRight, Navigation, User, Building2, Briefcase } from "lucide-react";
 import Link from "next/link";
 import * as ProductCard from "@/components/ui/product-card";
+import * as WorkspaceCard from "@/features/workspace/components/workspace-card";
 
 type DemoVariant =
   | "primary"
@@ -961,6 +962,50 @@ function HomeContent(): React.JSX.Element {
             </ProductCard.Top>
             <ProductCard.Action>Link</ProductCard.Action>
           </ProductCard.Root>
+        </div>
+      </Section>
+
+      <Section title="WorkspaceCard">
+        <div className="mb-4 flex items-center gap-2">
+          <span className="rounded-full bg-surface-primary-default px-2.5 py-1 text-xs text-white">
+            WorkspaceCard
+          </span>
+        </div>
+        <div className="flex flex-wrap gap-6">
+          <WorkspaceCard.Root
+            menu={
+              <>
+                <WorkspaceCard.MenuItem>Rename</WorkspaceCard.MenuItem>
+                <WorkspaceCard.MenuItem>Duplicate</WorkspaceCard.MenuItem>
+                <WorkspaceCard.MenuSub>
+                  <WorkspaceCard.MenuSubTrigger>Move to folder</WorkspaceCard.MenuSubTrigger>
+                  <WorkspaceCard.MenuSubContent>
+                    <WorkspaceCard.MenuItem>Design</WorkspaceCard.MenuItem>
+                    <WorkspaceCard.MenuItem>Marketing</WorkspaceCard.MenuItem>
+                  </WorkspaceCard.MenuSubContent>
+                </WorkspaceCard.MenuSub>
+                <WorkspaceCard.MenuSeparator />
+                <WorkspaceCard.MenuItem>Open in new tab</WorkspaceCard.MenuItem>
+                <WorkspaceCard.MenuItem>Copy link</WorkspaceCard.MenuItem>
+                <WorkspaceCard.MenuItem>Share</WorkspaceCard.MenuItem>
+                <WorkspaceCard.MenuSeparator />
+                <WorkspaceCard.MenuItem>Export as PDF</WorkspaceCard.MenuItem>
+                <WorkspaceCard.MenuItem>Download</WorkspaceCard.MenuItem>
+                <WorkspaceCard.MenuItem>Delete</WorkspaceCard.MenuItem>
+              </>
+            }
+          >
+            <WorkspaceCard.Image>
+              <WorkspaceCard.Favorite active />
+            </WorkspaceCard.Image>
+            <WorkspaceCard.Info>
+              <WorkspaceCard.IconBox icon={<Briefcase className="size-5" />} />
+              <WorkspaceCard.TextGroup>
+                <WorkspaceCard.Title>My Workspace</WorkspaceCard.Title>
+                <WorkspaceCard.Description>Edit 5 minutes ago</WorkspaceCard.Description>
+              </WorkspaceCard.TextGroup>
+            </WorkspaceCard.Info>
+          </WorkspaceCard.Root>
         </div>
       </Section>
     </>
