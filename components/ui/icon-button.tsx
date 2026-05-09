@@ -7,8 +7,8 @@ export interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEl
 }
 
 const sizeClasses = {
-  medium: "w-9 h-9 p-2 gap-2", // 36px, padding 8px
-  small: "w-8 h-8 p-2 gap-2",  // 32px, padding 8px
+  medium: "w-10 h-10 p-2 gap-2", // 40px, padding 8px
+  small: "w-8 h-8 p-2 gap-2", // 32px, padding 8px
   xs: "w-[22px] h-[22px] p-2 gap-2", // 22px, padding 8px
 }
 

@@ -15,6 +15,8 @@ interface ToolbarState {
   setFileFilter: (value: string) => void
   sortBy: string
   setSortBy: (value: string) => void
+  viewMode: "grid" | "list"
+  setViewMode: (value: "grid" | "list") => void
 }
 
 export const useToolbarStore = create<ToolbarState>((set) => ({
@@ -22,4 +24,6 @@ export const useToolbarStore = create<ToolbarState>((set) => ({
   setFileFilter: (value) => set({ fileFilter: value }),
   sortBy: "last-viewed",
   setSortBy: (value) => set({ sortBy: value }),
+  viewMode: "grid",
+  setViewMode: (value) => set({ viewMode: value }),
 }))

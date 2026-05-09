@@ -12,6 +12,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@/components/ui/toggle-group"
 import { useToolbarStore } from "@/stores/dialog-store"
 
 interface DashboardToolbarProps {
@@ -80,33 +84,31 @@ export function DashboardToolbar({ className }: DashboardToolbarProps) {
         </Select>
 
         {/* View toggle */}
-        <div
+        <ToggleGroup
+          type="single"
+          value={useToolbarStore((s) => s.viewMode)}
+          onValueChange={(v) => v && useToolbarStore.getState().setViewMode(v as "grid" | "list")}
+          spacing={0}
           className={cn(
-            "flex items-center gap-1 p-1 rounded-[8px]",
+            "flex items-center gap-2 p-2 rounded-[8px]",
             "bg-[var(--surface-neutral-secondary)]"
           )}
         >
-          <button
-            className={cn(
-              "flex items-center justify-center size-8 rounded-[8px]",
-              "bg-white text-[var(--color-gray-900)]",
-              "shadow-sm"
-            )}
+          <ToggleGroupItem
+            value="grid"
             aria-label="Grid view"
+            className="flex items-center justify-center size-8 p-2 gap-2 rounded-[8px] data-[state=on]:bg-white data-[state=on]:text-[#1E1E1E] data-[state=on]:shadow-sm text-[var(--color-gray-500)] hover:bg-white/60 border-0"
           >
             <LayoutGrid className="size-4" />
-          </button>
-          <button
-            className={cn(
-              "flex items-center justify-center size-8 rounded-[8px]",
-              "text-[var(--color-gray-500)]",
-              "hover:bg-white/60 transition-colors"
-            )}
+          </ToggleGroupItem>
+          <ToggleGroupItem
+            value="list"
             aria-label="List view"
+            className="flex items-center justify-center size-8 p-2 gap-2 rounded-[8px] data-[state=on]:bg-white data-[state=on]:text-[#1E1E1E] data-[state=on]:shadow-sm text-[var(--color-gray-500)] hover:bg-white/60 border-0"
           >
             <List className="size-4" />
-          </button>
-        </div>
+          </ToggleGroupItem>
+        </ToggleGroup>
       </div>
     </div>
   )

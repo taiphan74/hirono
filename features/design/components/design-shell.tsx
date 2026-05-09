@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/sidebar"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { SpacePanelHeader } from "@/features/design/components/space-panel-header"
+import { Toolbar } from "@/features/design/components/Toolbar"
 import { cn } from "@/lib/utils"
 import {
   LayoutDashboard,
@@ -149,6 +150,8 @@ export function DesignShell({
           <FloatingSidebar />
 
           <SpacePanelHeader />
+
+          <Toolbar />
         </div>
       </SidebarProvider>
     </TooltipProvider>
