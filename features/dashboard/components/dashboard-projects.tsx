@@ -6,6 +6,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Plus } from "lucide-react"
 import { ProjectCard } from "./project-card"
 import type { ProjectCardProps } from "./project-card"
+import { useCreateProjectDialogStore } from "@/stores/dialog-store"
 
 export interface DashboardProjectsProps {
   title?: string
@@ -88,7 +89,12 @@ export function DashboardProjects({
         <h1 className="text-xl font-semibold leading-[140%] text-[#111316]">
           {title}
         </h1>
-        <Button variant="primary" size="sm" data-icon="inline-end">
+        <Button
+          variant="primary"
+          size="sm"
+          data-icon="inline-end"
+          onClick={() => useCreateProjectDialogStore.getState().setOpen(true)}
+        >
           Create new
           <Plus className="size-4" />
         </Button>
