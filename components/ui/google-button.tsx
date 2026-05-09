@@ -24,7 +24,7 @@ const GoogleButton = React.forwardRef<HTMLButtonElement, GoogleButtonProps>(
       )}
       {...props}
     >
-      <img src="/gg-logo.svg" alt="" aria-hidden className="size-4 shrink-0" />
+      <img src="/google-icon.svg" alt="" aria-hidden className="size-4 shrink-0" />
       {children ?? "Log in with Google"}
     </button>
   )
