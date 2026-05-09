@@ -5,16 +5,25 @@ import { Search, LayoutGrid, List } from "lucide-react"
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { useToolbarStore } from "@/stores/dialog-store"
 
 interface DashboardToolbarProps {
   className?: string
 }
 
 export function DashboardToolbar({ className }: DashboardToolbarProps) {
+  const fileFilter = useToolbarStore((s) => s.fileFilter)
+  const setFileFilter = useToolbarStore((s) => s.setFileFilter)
+  const sortBy = useToolbarStore((s) => s.sortBy)
+  const setSortBy = useToolbarStore((s) => s.setSortBy)
+
   return (
     <div
       className={cn(
@@ -38,7 +47,7 @@ export function DashboardToolbar({ className }: DashboardToolbarProps) {
       {/* Right controls */}
       <div className="flex items-center gap-4">
         {/* Select: All files */}
-        <Select defaultValue="all">
+        <Select value={fileFilter} onValueChange={setFileFilter}>
           <SelectTrigger className="rounded-[8px]">
             <SelectValue />
           </SelectTrigger>
@@ -50,15 +59,23 @@ export function DashboardToolbar({ className }: DashboardToolbarProps) {
           </SelectContent>
         </Select>
 
-        {/* Select: Last updated */}
-        <Select defaultValue="updated">
+        {/* Select: Sort with groups */}
+        <Select value={sortBy} onValueChange={setSortBy}>
           <SelectTrigger className="rounded-[8px]">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="updated">Last updated</SelectItem>
-            <SelectItem value="created">Date created</SelectItem>
-            <SelectItem value="name">Name</SelectItem>
+            <SelectGroup>
+              <SelectLabel>Sort by</SelectLabel>
+              <SelectItem value="date-created">Date created</SelectItem>
+              <SelectItem value="last-viewed">Last viewed</SelectItem>
+            </SelectGroup>
+            <SelectSeparator />
+            <SelectGroup>
+              <SelectLabel>Order</SelectLabel>
+              <SelectItem value="oldest">Oldest first</SelectItem>
+              <SelectItem value="newest">Newest first</SelectItem>
+            </SelectGroup>
           </SelectContent>
         </Select>
 

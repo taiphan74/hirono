@@ -1,14 +1,13 @@
 "use client"
 
 import { Avatar } from "@/components/ui/avatar"
-import { Bell } from "lucide-react"
+import { NotificationDropdown } from "@/features/notification"
 import { cn } from "@/lib/utils"
 
 interface SidebarUserProfileProps {
   name: string
   plan: string
   avatarSrc?: string
-  onNotificationClick?: () => void
   className?: string
 }
 
@@ -16,7 +15,6 @@ export function SidebarUserProfile({
   name,
   plan,
   avatarSrc,
-  onNotificationClick,
   className,
 }: SidebarUserProfileProps) {
   return (
@@ -35,12 +33,7 @@ export function SidebarUserProfile({
           {plan}
         </p>
       </div>
-      <button
-        onClick={onNotificationClick}
-        className="shrink-0 flex items-center justify-center size-[36px] rounded-[8px] border border-[var(--color-gray-200)] bg-white hover:bg-[var(--surface-default-default-hover)] transition-colors"
-      >
-        <Bell className="size-5 text-[var(--color-gray-600)]" />
-      </button>
+      <NotificationDropdown />
     </div>
   )
 }

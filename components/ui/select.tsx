@@ -6,7 +6,7 @@ import { Select as SelectPrimitive } from "radix-ui"
 import { cn } from "@/lib/utils"
 
 const selectTriggerVariants = cva(
-  "group/select flex h-10 min-w-[120px] cursor-pointer items-center justify-between gap-2 rounded-[16px] border bg-white py-3 pl-4 pr-3 text-base leading-[1] text-[#1E1E1E] outline-none transition-colors disabled:cursor-not-allowed disabled:border-[#B3B3B3] disabled:bg-[#D9D9D9] disabled:text-[#B3B3B3] data-[placeholder]:text-[#B3B3B3]",
+  "group/select flex h-10 min-w-[120px] cursor-pointer items-center justify-between gap-2 rounded-lg border bg-white py-3 pl-4 pr-3 text-base leading-[1] text-[#1E1E1E] outline-none transition-colors disabled:cursor-not-allowed disabled:border-[#B3B3B3] disabled:bg-[#D9D9D9] disabled:text-[#B3B3B3] data-[placeholder]:text-[#B3B3B3]",
   {
     variants: {
       state: {
@@ -54,13 +54,13 @@ function SelectContent({ className, children, position = "popper", ...props }: R
         data-slot="select-content"
         position={position}
         className={cn(
-          "z-50 min-w-[105px] overflow-hidden rounded-[16px] border border-[#D9D9D9] bg-white text-[#1E1E1E] shadow-sm",
+          "z-50 w-[var(--radix-select-trigger-width)] min-w-[var(--radix-select-trigger-width)] overflow-hidden rounded-lg border border-[#D9D9D9] bg-white p-1 text-[#1E1E1E] shadow-sm",
           position === "popper" && "translate-y-1",
           className
         )}
         {...props}
       >
-        <SelectPrimitive.Viewport className="flex flex-col gap-2 p-2">
+        <SelectPrimitive.Viewport className="flex flex-col">
           {children}
         </SelectPrimitive.Viewport>
       </SelectPrimitive.Content>
@@ -73,20 +73,50 @@ function SelectItem({ className, children, ...props }: React.ComponentProps<type
     <SelectPrimitive.Item
       data-slot="select-item"
       className={cn(
-        "relative flex w-full cursor-pointer items-center rounded-md py-0 text-base leading-[1.4] text-[#1E1E1E] outline-none focus:bg-black/5 data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+        "relative flex w-full cursor-pointer items-center rounded-sm p-2 text-base leading-[1.4] text-[#1E1E1E] outline-none focus:bg-black/5 data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
         className
       )}
       {...props}
     >
-      <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
-      <span className="absolute right-0 flex size-4 items-center justify-center">
+      <SelectPrimitive.ItemText className="flex-1">{children}</SelectPrimitive.ItemText>
+      <span className="absolute right-2 top-1/2 -translate-y-1/2 flex size-4 items-center justify-center">
         <SelectPrimitive.ItemIndicator>
-          <Check className="size-4" />
+          <Check className="size-4 text-[#5036EF]" />
         </SelectPrimitive.ItemIndicator>
       </span>
     </SelectPrimitive.Item>
   )
 }
 
-export { Select, SelectContent, SelectItem, SelectTrigger, SelectValue }
+function SelectLabel({ className, ...props }: React.ComponentProps<typeof SelectPrimitive.Label>): React.JSX.Element {
+  return (
+    <SelectPrimitive.Label
+      data-slot="select-label"
+      className={cn("px-2 py-1 text-sm font-normal text-[#556070]", className)}
+      {...props}
+    />
+  )
+}
+
+function SelectSeparator({ className, ...props }: React.ComponentProps<typeof SelectPrimitive.Separator>): React.JSX.Element {
+  return (
+    <SelectPrimitive.Separator
+      data-slot="select-separator"
+      className={cn("my-1 h-px bg-[#D9D9D9]", className)}
+      {...props}
+    />
+  )
+}
+
+function SelectGroup({ className, ...props }: React.ComponentProps<typeof SelectPrimitive.Group>): React.JSX.Element {
+  return (
+    <SelectPrimitive.Group
+      data-slot="select-group"
+      className={cn("flex flex-col", className)}
+      {...props}
+    />
+  )
+}
+
+export { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectLabel, SelectSeparator, SelectGroup }
 export type { SelectTriggerProps }
