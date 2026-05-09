@@ -1,5 +1,7 @@
 "use client"
 
+import { useEffect } from "react"
+import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import {
   Home,
@@ -13,6 +15,7 @@ import {
 import Image from "next/image"
 import { SidebarNavItem } from "./sidebar-nav-item"
 import { SidebarUserProfile } from "./sidebar-user-profile"
+import { useSidebarStore } from "@/stores/sidebar-store"
 
 interface NavGroup {
   label: string
@@ -37,7 +40,7 @@ const defaultNavGroups: NavGroup[] = [
   {
     label: "Workspace",
     items: [
-      { icon: Home, label: "Home", href: "/dashboard/home", isActive: true },
+      { icon: Home, label: "Home", href: "/dashboard/home" },
       { icon: Users, label: "Community", href: "/dashboard/community" },
       { icon: LayoutList, label: "Project", href: "/dashboard/project" },
       { icon: Star, label: "Bookmark", href: "/dashboard/bookmark" },
@@ -58,10 +61,22 @@ export function DashboardSidebar({
   userName = "Barchen",
   userPlan = "Pro",
   userAvatarSrc,
-  activeHref,
+  activeHref: externalActiveHref,
   navGroups = defaultNavGroups,
   className,
 }: DashboardSidebarProps) {
+  const pathname = usePathname()
+  const storeActiveHref = useSidebarStore((s) => s.activeHref)
+  const setActiveHref = useSidebarStore((s) => s.setActiveHref)
+
+  // Sync current pathname to the store
+  useEffect(() => {
+    setActiveHref(pathname)
+  }, [pathname, setActiveHref])
+
+  // External prop takes priority over store, otherwise use store value
+  const activeHref = externalActiveHref ?? storeActiveHref
+
   return (
     <aside
       className={cn(
@@ -108,7 +123,7 @@ export function DashboardSidebar({
                   icon={item.icon}
                   label={item.label}
                   href={item.href}
-                  isActive={activeHref ? activeHref === item.href : item.isActive}
+                  isActive={item.href ? activeHref === item.href : item.isActive}
                 />
               ))}
             </ul>
