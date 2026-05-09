@@ -18,7 +18,7 @@ const WorkspaceCardRoot = React.forwardRef<HTMLDivElement, WorkspaceCardRootProp
       <div
         ref={ref}
         className={cn(
-          "flex w-[272px] flex-col items-start gap-2.5 rounded-lg border border-[#D5D8DD] bg-white p-3",
+          "flex w-full flex-col items-start gap-2.5 rounded-lg border border-[#D5D8DD] bg-white p-3",
           className
         )}
         {...props}

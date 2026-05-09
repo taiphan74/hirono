@@ -25,7 +25,7 @@ const WorkspaceCardFavorite = React.forwardRef<HTMLButtonElement, WorkspaceCardF
       <Star
         className={cn(
           "size-5",
-          active ? "fill-[#5036EF] text-[#5036EF]" : "text-gray-400"
+          active ? "fill-[#FFCB00] text-[#FFCB00]" : "text-gray-400"
         )}
       />
     </IconButton>

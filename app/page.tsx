@@ -14,7 +14,7 @@ import { MultiCombobox } from "@/components/ui/multi-combobox";
 import { ChevronRight, Navigation, User, Building2, Briefcase } from "lucide-react";
 import Link from "next/link";
 import * as ProductCard from "@/components/ui/product-card";
-import * as WorkspaceCard from "@/features/workspace/components/workspace-card";
+import * as WorkspaceCard from "@/features/dashboard/components/workspace-card";
 
 type DemoVariant =
   | "primary"
