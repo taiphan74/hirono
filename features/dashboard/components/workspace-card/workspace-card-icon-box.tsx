@@ -2,31 +2,19 @@
 
 import * as React from "react"
 import { cn } from "@/lib/utils"
-import { PenTool, FileText, Presentation } from "lucide-react"
-
-export type WorkspaceCardType = "design" | "note" | "present"
+import { PenTool } from "lucide-react"
 
 type WorkspaceCardIconBoxProps = React.HTMLAttributes<HTMLDivElement> & {
   icon?: React.ReactNode
-  type?: WorkspaceCardType
-}
-
-const typeConfig: Record<WorkspaceCardType, { bg: string; Icon: React.ComponentType<{ className?: string }> }> = {
-  design: { bg: "bg-[#5036EF]", Icon: PenTool },
-  note: { bg: "bg-[#4F558F]", Icon: FileText },
-  present: { bg: "bg-[#D357FF]", Icon: Presentation },
 }
 
 const WorkspaceCardIconBox = React.forwardRef<HTMLDivElement, WorkspaceCardIconBoxProps>(
-  ({ className, icon, type, ...props }, ref) => {
-    const config = type ? typeConfig[type] : typeConfig.design
-
+  ({ className, icon, ...props }, ref) => {
     return (
       <div
         ref={ref}
         className={cn(
-          "flex h-10 w-10 flex-none items-center justify-center rounded-lg p-2",
-          config.bg,
+          "flex h-10 w-10 flex-none items-center justify-center rounded-lg bg-[#5036EF] p-2",
           className
         )}
         {...props}
@@ -36,7 +24,7 @@ const WorkspaceCardIconBox = React.forwardRef<HTMLDivElement, WorkspaceCardIconB
             {icon}
           </span>
         ) : (
-          <config.Icon className={cn("size-6 text-white", type === "design" && "rotate-270")} />
+          <PenTool className="size-6 rotate-270 text-white" />
         )}
       </div>
     )

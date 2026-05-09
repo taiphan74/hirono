@@ -15,10 +15,17 @@ import {
   WorkspaceCardMenuItem,
   WorkspaceCardMenuSeparator,
 } from "./workspace-card"
-import type { WorkspaceCardType } from "./workspace-card/workspace-card-icon-box"
+import { DashboardFileList, type FileListItem } from "./dashboard-file-list"
+import { useToolbarStore } from "@/stores/dialog-store"
 import { dashboardService, type Workspace } from "../services/dashboard.service"
 
-function DefaultMenu() {
+function DefaultMenu({
+  workspaceId,
+  onDeleted,
+}: {
+  workspaceId: string
+  onDeleted: () => void
+}) {
   return (
     <>
       <WorkspaceCardMenuItem>Open</WorkspaceCardMenuItem>
@@ -29,7 +36,16 @@ function DefaultMenu() {
       <WorkspaceCardMenuItem>Share</WorkspaceCardMenuItem>
       <WorkspaceCardMenuItem>Duplicate</WorkspaceCardMenuItem>
       <WorkspaceCardMenuSeparator />
-      <WorkspaceCardMenuItem>Move to trash</WorkspaceCardMenuItem>
+      <WorkspaceCardMenuItem
+        onClick={() =>
+          dashboardService
+            .deleteWorkspace(workspaceId)
+            .then(onDeleted)
+            .catch(console.error)
+        }
+      >
+        Move to trash
+      </WorkspaceCardMenuItem>
     </>
   )
 }
@@ -40,7 +56,6 @@ export interface FileItem {
   description: string
   imageSrc?: string
   favorite?: boolean
-  type?: WorkspaceCardType
   icon?: React.ReactNode
   menu?: React.ReactNode
 }
@@ -50,34 +65,35 @@ interface DashboardFilesProps {
   className?: string
 }
 
-const types: WorkspaceCardType[] = ["design", "note", "present"]
-
-function mapWorkspaceToFileItem(workspace: Workspace, index: number): FileItem {
-  return {
-    id: workspace.id,
-    name: workspace.name,
-    description: new Date(workspace.updatedAt).toLocaleDateString(),
-    type: types[index % 3],
-  }
-}
-
 export function DashboardFiles({ files, className }: DashboardFilesProps) {
   const [workspaces, setWorkspaces] = useState<Workspace[]>([])
   const [loading, setLoading] = useState(true)
+  const viewMode = useToolbarStore((s) => s.viewMode)
+
+  const fetchWorkspaces = () => {
+    setLoading(true)
+    Promise.all([
+      dashboardService.getWorkspaces(),
+      dashboardService.getFavoriteWorkspaces(),
+    ])
+      .then(([workspacesRes, favoritesRes]) => {
+        if (workspacesRes.status === "SUCCESS") {
+          const favoriteIds = favoritesRes.status === "SUCCESS"
+            ? new Set(favoritesRes.data.map((w) => w.id))
+            : new Set<string>()
+          setWorkspaces(
+            workspacesRes.data.map((w) => ({
+              ...w,
+              favorite: favoriteIds.has(w.id),
+            }))
+          )
+        }
+      })
+      .catch(console.error)
+      .finally(() => setLoading(false))
+  }
 
   useEffect(() => {
-    const fetchWorkspaces = () => {
-      dashboardService
-        .getWorkspaces()
-        .then((res) => {
-          if (res.status === "SUCCESS") {
-            setWorkspaces(res.data)
-          }
-        })
-        .catch(console.error)
-        .finally(() => setLoading(false))
-    }
-
     fetchWorkspaces()
 
     const handleWorkspaceCreated = () => {
@@ -89,8 +105,33 @@ export function DashboardFiles({ files, className }: DashboardFilesProps) {
     return () => window.removeEventListener("workspace-created", handleWorkspaceCreated)
   }, [])
 
+  const handleToggleFavorite = (workspaceId: string, favorite: boolean) => {
+    dashboardService
+      .toggleFavorite(workspaceId, favorite)
+      .then(() => {
+        setWorkspaces((prev) =>
+          prev.map((w) => (w.id === workspaceId ? { ...w, favorite } : w))
+        )
+      })
+      .catch(console.error)
+  }
+
   const displayFiles: FileItem[] =
-    files ?? workspaces.map((w, i) => mapWorkspaceToFileItem(w, i))
+    files ?? workspaces.map((w) => ({
+      id: w.id,
+      name: w.name,
+      description: new Date(w.updatedAt).toLocaleDateString(),
+      imageSrc: w.thumbnail,
+      favorite: w.favorite,
+    }))
+
+  const listItems: FileListItem[] = displayFiles.map((f) => ({
+    id: f.id,
+    name: f.name,
+    thumbnail: f.imageSrc,
+    lastEdited: f.description,
+    createdTime: f.description,
+  }))
 
   if (loading) {
     return (
@@ -105,6 +146,14 @@ export function DashboardFiles({ files, className }: DashboardFilesProps) {
     )
   }
 
+  if (viewMode === "list") {
+    return (
+      <div className={cn("flex h-full flex-col gap-2 py-3", className)}>
+        <DashboardFileList items={listItems} />
+      </div>
+    )
+  }
+
   return (
     <div className={cn("flex h-full flex-col gap-2 py-3", className)}>
       <p className="text-base font-semibold leading-[140%] text-black whitespace-nowrap">
@@ -113,12 +162,15 @@ export function DashboardFiles({ files, className }: DashboardFilesProps) {
       <ScrollArea className="flex-1">
         <div className="grid w-full grid-cols-4 gap-4">
           {displayFiles.map((file) => (
-            <WorkspaceCardRoot key={file.id} menu={file.menu ?? <DefaultMenu />}>
+            <WorkspaceCardRoot key={file.id} menu={file.menu ?? <DefaultMenu workspaceId={file.id} onDeleted={fetchWorkspaces} />}>
               <WorkspaceCardImage src={file.imageSrc}>
-                <WorkspaceCardFavorite active={file.favorite ?? false} />
+                <WorkspaceCardFavorite
+                  active={file.favorite ?? false}
+                  onToggle={(fav) => handleToggleFavorite(file.id, fav)}
+                />
               </WorkspaceCardImage>
               <WorkspaceCardInfo>
-                <WorkspaceCardIconBox icon={file.icon} type={file.type} />
+                <WorkspaceCardIconBox icon={file.icon} />
                 <WorkspaceCardTextGroup>
                   <WorkspaceCardTitle>{file.name}</WorkspaceCardTitle>
                   <WorkspaceCardDescription>{file.description}</WorkspaceCardDescription>

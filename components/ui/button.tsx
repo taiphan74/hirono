@@ -27,7 +27,7 @@ const buttonVariants = cva(
           "border-transparent bg-transparent text-[#690807] leading-[1] data-[size=sm]:leading-[1.4] hover:border-[#F4776A] hover:bg-transparent active:border-[#EC221F] active:bg-transparent data-[state=hover]:border-[#F4776A] data-[state=hover]:data-[size=sm]:border-[#690807] data-[state=hover]:bg-transparent data-[state=active]:border-[#EC221F] data-[state=active]:bg-transparent"
       },
       size: {
-        xs: "h-8 gap-2 px-3 text-xs has-data-[icon=inline-end]:pr-2.5 has-data-[icon=inline-start]:pl-2.5 [&_svg:not([class*='size-'])]:size-4",
+        xs: "h-8 gap-2 px-3 text-xs rounded has-data-[icon=inline-end]:pr-2.5 has-data-[icon=inline-start]:pl-2.5 [&_svg:not([class*='size-'])]:size-4",
         sm: "h-9 gap-2 px-3 text-sm has-data-[icon=inline-end]:pr-2.5 has-data-[icon=inline-start]:pl-2.5 [&_svg:not([class*='size-'])]:size-4",
         md: "h-10 gap-2 px-4 text-base has-data-[icon=inline-end]:pr-3 has-data-[icon=inline-start]:pl-3 [&_svg:not([class*='size-'])]:size-4",
         lg: "h-12 gap-2 px-6 text-base has-data-[icon=inline-end]:pr-3 has-data-[icon=inline-start]:pl-3 [&_svg:not([class*='size-'])]:size-4",

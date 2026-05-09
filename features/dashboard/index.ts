@@ -29,7 +29,7 @@ export type { WorkspaceCardRootProps } from "./components/workspace-card"
 export type { WorkspaceCardImageProps } from "./components/workspace-card"
 export type { WorkspaceCardFavoriteProps } from "./components/workspace-card"
 export type { WorkspaceCardInfoProps } from "./components/workspace-card"
-export type { WorkspaceCardIconBoxProps, WorkspaceCardType } from "./components/workspace-card"
+export type { WorkspaceCardIconBoxProps } from "./components/workspace-card"
 export type {
   WorkspaceCardTextGroupProps,
   WorkspaceCardTitleProps,

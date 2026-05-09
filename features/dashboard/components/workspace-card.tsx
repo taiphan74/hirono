@@ -39,7 +39,7 @@ export type { WorkspaceCardRootProps } from "./workspace-card/workspace-card-roo
 export type { WorkspaceCardImageProps } from "./workspace-card/workspace-card-image"
 export type { WorkspaceCardFavoriteProps } from "./workspace-card/workspace-card-favorite"
 export type { WorkspaceCardInfoProps } from "./workspace-card/workspace-card-info"
-export type { WorkspaceCardIconBoxProps, WorkspaceCardType } from "./workspace-card/workspace-card-icon-box"
+export type { WorkspaceCardIconBoxProps } from "./workspace-card/workspace-card-icon-box"
 export type {
   WorkspaceCardTextGroupProps,
   WorkspaceCardTitleProps,

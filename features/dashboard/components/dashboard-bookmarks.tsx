@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { cn } from "@/lib/utils"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import {
@@ -14,9 +15,15 @@ import {
   WorkspaceCardMenuItem,
   WorkspaceCardMenuSeparator,
 } from "./workspace-card"
-import type { WorkspaceCardType } from "./workspace-card/workspace-card-icon-box"
+import { dashboardService, type Workspace } from "../services/dashboard.service"
 
-function DefaultMenu() {
+function DefaultMenu({
+  workspaceId,
+  onDeleted,
+}: {
+  workspaceId: string
+  onDeleted: () => void
+}) {
   return (
     <>
       <WorkspaceCardMenuItem>Open</WorkspaceCardMenuItem>
@@ -27,41 +34,73 @@ function DefaultMenu() {
       <WorkspaceCardMenuItem>Share</WorkspaceCardMenuItem>
       <WorkspaceCardMenuItem>Duplicate</WorkspaceCardMenuItem>
       <WorkspaceCardMenuSeparator />
-      <WorkspaceCardMenuItem>Remove from bookmarks</WorkspaceCardMenuItem>
+      <WorkspaceCardMenuItem
+        onClick={() =>
+          dashboardService
+            .toggleFavorite(workspaceId, false)
+            .then(onDeleted)
+            .catch(console.error)
+        }
+      >
+        Remove from bookmarks
+      </WorkspaceCardMenuItem>
       <WorkspaceCardMenuSeparator />
-      <WorkspaceCardMenuItem>Move to trash</WorkspaceCardMenuItem>
+      <WorkspaceCardMenuItem
+        onClick={() =>
+          dashboardService
+            .deleteWorkspace(workspaceId)
+            .then(onDeleted)
+            .catch(console.error)
+        }
+      >
+        Move to trash
+      </WorkspaceCardMenuItem>
     </>
   )
 }
 
-export interface BookmarkItem {
-  id: string
-  name: string
-  description: string
-  imageSrc?: string
-  type?: WorkspaceCardType
-  icon?: React.ReactNode
-  menu?: React.ReactNode
-}
-
 interface DashboardBookmarksProps {
-  bookmarks?: BookmarkItem[]
   className?: string
 }
 
-const types: WorkspaceCardType[] = ["design", "note", "present"]
+export function DashboardBookmarks({ className }: DashboardBookmarksProps) {
+  const [bookmarks, setBookmarks] = useState<Workspace[]>([])
+  const [loading, setLoading] = useState(true)
 
-const defaultBookmarks: BookmarkItem[] = Array.from({ length: 6 }, (_, i) => ({
-  id: String(i + 1),
-  name: "Name",
-  description: "Edit 15 minutes ago",
-  type: types[i % 3],
-}))
+  const fetchBookmarks = () => {
+    setLoading(true)
+    dashboardService
+      .getFavoriteWorkspaces()
+      .then((res) => {
+        if (res.status === "SUCCESS") {
+          setBookmarks(res.data)
+        }
+      })
+      .catch(console.error)
+      .finally(() => setLoading(false))
+  }
 
-export function DashboardBookmarks({
-  bookmarks = defaultBookmarks,
-  className,
-}: DashboardBookmarksProps) {
+  useEffect(() => {
+    fetchBookmarks()
+  }, [])
+
+  const handleRemoved = (id: string) => {
+    setBookmarks((prev) => prev.filter((b) => b.id !== id))
+  }
+
+  if (loading) {
+    return (
+      <div className={cn("flex h-full flex-col gap-2 py-3", className)}>
+        <p className="text-base font-semibold leading-[140%] text-black whitespace-nowrap">
+          Files
+        </p>
+        <div className="flex flex-1 items-center justify-center">
+          <p className="text-sm text-gray-400">Loading...</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className={cn("flex h-full flex-col gap-2 py-3", className)}>
       <p className="text-base font-semibold leading-[140%] text-black whitespace-nowrap">
@@ -70,15 +109,23 @@ export function DashboardBookmarks({
       <ScrollArea className="flex-1">
         <div className="grid w-full grid-cols-4 gap-4">
           {bookmarks.map((item) => (
-            <WorkspaceCardRoot key={item.id} menu={item.menu ?? <DefaultMenu />}>
-              <WorkspaceCardImage src={item.imageSrc}>
-                <WorkspaceCardFavorite active />
+            <WorkspaceCardRoot key={item.id} menu={<DefaultMenu workspaceId={item.id} onDeleted={() => handleRemoved(item.id)} />}>
+              <WorkspaceCardImage src={item.thumbnail}>
+                <WorkspaceCardFavorite
+                  active
+                  onToggle={(fav) => {
+                    dashboardService
+                      .toggleFavorite(item.id, fav)
+                      .then(() => handleRemoved(item.id))
+                      .catch(console.error)
+                  }}
+                />
               </WorkspaceCardImage>
               <WorkspaceCardInfo>
-                <WorkspaceCardIconBox icon={item.icon} type={item.type} />
+                <WorkspaceCardIconBox />
                 <WorkspaceCardTextGroup>
                   <WorkspaceCardTitle>{item.name}</WorkspaceCardTitle>
-                  <WorkspaceCardDescription>{item.description}</WorkspaceCardDescription>
+                  <WorkspaceCardDescription>{new Date(item.updatedAt).toLocaleDateString()}</WorkspaceCardDescription>
                 </WorkspaceCardTextGroup>
               </WorkspaceCardInfo>
             </WorkspaceCardRoot>
