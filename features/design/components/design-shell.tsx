@@ -17,6 +17,7 @@ import {
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { SpacePanelHeader } from "@/features/design/components/space-panel-header"
 import { Toolbar } from "@/features/design/components/Toolbar"
+import { WorkspaceHeader } from "@/features/design/components/workspace-header"
 import { cn } from "@/lib/utils"
 import {
   LayoutDashboard,
@@ -28,37 +29,45 @@ import {
 import { usePathname } from "next/navigation"
 import Link from "next/link"
 
+function useWorkspaceBasePath() {
+  const pathname = usePathname()
+  const match = pathname.match(/^\/workspace\/[^/]+/)
+  return match ? match[0] : "/workspace"
+}
+
 const menuItems = [
   {
     title: "Dashboard",
     icon: LayoutDashboard,
-    href: "/dashboard/workspace",
+    path: "",
   },
   {
     title: "Projects",
     icon: FolderKanban,
-    href: "/dashboard/workspace/projects",
+    path: "/projects",
   },
   {
     title: "Settings",
     icon: Settings,
-    href: "/dashboard/workspace/settings",
+    path: "/settings",
   },
   {
     title: "Help",
     icon: HelpCircle,
-    href: "/dashboard/workspace/help",
+    path: "/help",
   },
 ]
 
 function FloatingSidebar() {
   const pathname = usePathname()
   const { state } = useSidebar()
+  const basePath = useWorkspaceBasePath()
 
   const collapsed = state === "collapsed"
 
-  const isActive = (href: string) => {
-    if (href === "/dashboard/workspace") return pathname === "/dashboard/workspace"
+  const isActive = (path: string) => {
+    const href = `${basePath}${path}`
+    if (path === "") return pathname === basePath
     return pathname === href || pathname.startsWith(`${href}/`)
   }
 
@@ -100,13 +109,13 @@ function FloatingSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item) => (
-                <SidebarMenuItem key={item.href}>
+                <SidebarMenuItem key={item.path}>
                   <SidebarMenuButton
                     asChild
-                    isActive={isActive(item.href)}
+                    isActive={isActive(item.path)}
                     tooltip={item.title}
                   >
-                    <Link href={item.href}>
+                    <Link href={`${basePath}${item.path}`}>
                       <item.icon />
                       <span className={cn(collapsed && "hidden")}>
                         {item.title}
@@ -146,12 +155,9 @@ export function DesignShell({
           <main className="absolute inset-0 z-0">
             {children}
           </main>
-
-          <FloatingSidebar />
-
-          <SpacePanelHeader />
-
-          <Toolbar />
+          <div className="relative z-10">
+            <WorkspaceHeader />
+          </div>
         </div>
       </SidebarProvider>
     </TooltipProvider>

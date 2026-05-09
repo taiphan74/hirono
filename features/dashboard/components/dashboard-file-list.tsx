@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { cn } from "@/lib/utils"
 
 export interface FileListItem {
@@ -43,9 +44,10 @@ export function DashboardFileList({ items, className }: DashboardFileListProps) 
 
         {/* Rows */}
         {items.map((item) => (
-          <div
+          <Link
             key={item.id}
-            className="flex gap-4 items-center p-1 border-b border-[var(--color-gray-300)]"
+            href={`/workspace/${item.id}`}
+            className="flex gap-4 items-center p-1 border-b border-[var(--color-gray-300)] hover:bg-[var(--color-gray-100)] transition-colors"
           >
             {/* Name + thumbnail */}
             <div className="flex gap-1 items-center shrink-0 w-[320px]">
@@ -103,7 +105,7 @@ export function DashboardFileList({ items, className }: DashboardFileListProps) 
             <p className="flex-1 min-w-0 text-base leading-[1.4] text-[var(--color-gray-1000)] truncate">
               {item.createdTime}
             </p>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

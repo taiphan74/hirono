@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import {
@@ -26,10 +27,13 @@ function DefaultMenu({
   workspaceId: string
   onDeleted: () => void
 }) {
+  const router = useRouter()
+  const workspaceUrl = `/workspace/${workspaceId}`
+
   return (
     <>
-      <WorkspaceCardMenuItem>Open</WorkspaceCardMenuItem>
-      <WorkspaceCardMenuItem>Open in new tab</WorkspaceCardMenuItem>
+      <WorkspaceCardMenuItem onClick={() => router.push(workspaceUrl)}>Open</WorkspaceCardMenuItem>
+      <WorkspaceCardMenuItem onClick={() => window.open(workspaceUrl, "_blank")}>Open in new tab</WorkspaceCardMenuItem>
       <WorkspaceCardMenuItem>Rename</WorkspaceCardMenuItem>
       <WorkspaceCardMenuSeparator />
       <WorkspaceCardMenuItem>Copy link</WorkspaceCardMenuItem>
@@ -162,7 +166,7 @@ export function DashboardFiles({ files, className }: DashboardFilesProps) {
       <ScrollArea className="flex-1">
         <div className="grid w-full grid-cols-4 gap-4">
           {displayFiles.map((file) => (
-            <WorkspaceCardRoot key={file.id} menu={file.menu ?? <DefaultMenu workspaceId={file.id} onDeleted={fetchWorkspaces} />}>
+            <WorkspaceCardRoot key={file.id} href={`/workspace/${file.id}`} menu={file.menu ?? <DefaultMenu workspaceId={file.id} onDeleted={fetchWorkspaces} />}>
               <WorkspaceCardImage src={file.imageSrc}>
                 <WorkspaceCardFavorite
                   active={file.favorite ?? false}

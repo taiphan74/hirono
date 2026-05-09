@@ -26,7 +26,6 @@ export function Toolbar({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "fixed bottom-4 left-1/2 z-50 -translate-x-1/2",
         "flex items-center gap-[10px]",
         "rounded-2xl bg-white px-8 py-4 shadow-xl",
         className

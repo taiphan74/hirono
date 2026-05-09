@@ -19,6 +19,29 @@ export interface CreateWorkspaceRequest {
   isPublish?: boolean
 }
 
+export interface CreateInvitationRequest {
+  email: string
+  role: "VIEWER" | "EDITOR" | "OWNER"
+}
+
+export interface Invitation {
+  id: string
+  workspaceId: string
+  workspaceName: string
+  workspaceThumbnail: string
+  inviterId: string
+  inviterFullName: string
+  inviterAvatar: string
+  inviteeId: string
+  inviteeFullName: string
+  inviteeEmail: string
+  inviteeAvatar: string
+  role: "VIEWER" | "EDITOR" | "OWNER"
+  status: "PENDING" | "ACCEPTED" | "REJECTED"
+  respondedAt: string
+  createdAt: string
+}
+
 export const dashboardService = {
   getWorkspaces: (): Promise<ApiResponse<Workspace[]>> =>
     api.get("workspaces"),
@@ -48,4 +71,10 @@ export const dashboardService = {
 
   deleteWorkspace: (workspaceId: string): Promise<ApiResponse<string>> =>
     api.delete(`workspaces/${workspaceId}`),
+
+  createInvitation: (
+    workspaceId: string,
+    data: CreateInvitationRequest,
+  ): Promise<ApiResponse<Invitation>> =>
+    api.post(`workspaces/${workspaceId}/invitations`, data),
 }
