@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { GoogleButton } from "@/components/ui/google-button";
 import { IconButton } from "@/components/ui/icon-button";
 import { Avatar } from "@/components/ui/avatar";
 import { InputField } from "@/components/ui/input-field";
@@ -188,14 +189,33 @@ function DemoIconButton({
           ? { disabled: true }
           : {};
 
+  const mappedSize = size === "md" ? "medium" : "small";
+  
+  // Map variant to valid IconButton variant
+  const mappedVariant = (() => {
+    switch (variant) {
+      case "primary":
+        return "primary";
+      case "secondary":
+      case "secondaryNeutral":
+      case "secondarySubtle":
+        return "secondary";
+      case "neutral":
+      case "subtle":
+        return "ghost";
+      default:
+        return "secondary"; // fallback
+    }
+  })();
+
   return (
-    <IconButton
-      variant={variant}
-      size={size}
+      <IconButton
+      variant={mappedVariant}
+      size={mappedSize}
       aria-label="Icon button"
       {...stateProps}
     >
-      <Navigation className="size-4" />
+      <Navigation />
     </IconButton>
   );
 }
@@ -795,12 +815,41 @@ function DemoAvatarMatrix(): React.JSX.Element {
   );
 }
 
+function DemoGoogleButton({
+  state,
+}: {
+  state: (typeof columns)[number];
+}): React.JSX.Element {
+  const stateProps =
+    state === "Hover"
+      ? { "data-state": "hover" as const }
+      : state === "Press"
+        ? { "data-state": "active" as const }
+        : state === "Disabled"
+          ? { disabled: true }
+          : {};
+
+  return (
+    <GoogleButton size="md" {...stateProps}>
+      Continue with Google
+    </GoogleButton>
+  );
+}
+
 function HomeContent(): React.JSX.Element {
   return (
     <>
       <Section title="Button">
         <DemoHeader label="Button" />
         <DemoButtonMatrix />
+        <div className="mt-6 flex items-center gap-4">
+          <span className="rounded-full bg-black/10 px-2 py-1 text-[11px] text-black/70">Google</span>
+          <div className="flex gap-4">
+            {columns.map((state) => (
+              <DemoGoogleButton key={`google-${state}`} state={state} />
+            ))}
+          </div>
+        </div>
       </Section>
 
       <Section title="IconButton">

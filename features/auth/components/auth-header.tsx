@@ -13,19 +13,14 @@ export function AuthHeader(): React.JSX.Element {
     <header className="flex w-full max-w-[1440px] mx-auto items-center border-b border-[#D5D8DD] bg-white px-6 py-5">
       <div className="flex items-center gap-[232px]">
         <div className="flex items-center gap-5">
-          <Link href="/" className="flex items-center gap-1 px-1.5">
+          <Link href="/" className="flex items-center">
             <Image
               src="/kojo-logo.svg"
               alt="Kojo"
-              width={21}
-              height={25}
+              width={76}
+              height={24}
               priority
             />
-            <span className="text-[22.4px] font-medium leading-[129%] text-[#000000]"
-              style={{ fontFamily: "var(--font-geist-sans), Inter, sans-serif" }}
-            >
-              Kojo
-            </span>
           </Link>
 
           <nav className="flex items-center gap-8">
