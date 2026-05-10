@@ -122,7 +122,7 @@ function DesignFlowCanvas() {
   const { screenToFlowPosition } = useReactFlow();
   const params = useParams();
   const workspaceId = params.slug as string;
-  const { createNode, updateNode, updateNodeId } = useNodeSync({ workspaceId });
+  const { createNode, updateNode, updateNodeId, deleteNode } = useNodeSync({ workspaceId });
   const mousePosition = useRef({ x: 0, y: 0 });
 
   const updateTextNode = useCallback(
@@ -160,6 +160,20 @@ function DesignFlowCanvas() {
       });
     },
     [workspaceId]
+  );
+
+  const onNodesDelete = useCallback(
+    (deletedNodes: FlowNode[]) => {
+      deletedNodes.forEach((node) => {
+        deleteNode(node.id);
+        edges
+          .filter((e) => e.source === node.id || e.target === node.id)
+          .forEach((e) => {
+            edgeService.deleteEdge(workspaceId, e.id).catch(console.error);
+          });
+      });
+    },
+    [deleteNode, edges, workspaceId]
   );
 
   const handleResizeEnd = useCallback(
@@ -488,6 +502,7 @@ function DesignFlowCanvas() {
         onPaneClick={handlePaneClick}
         onNodeDragStop={handleNodeDragStop}
         onSelectionChange={handleSelectionChange}
+        onNodesDelete={onNodesDelete}
         onEdgesDelete={onEdgesDelete}
         connectionMode={ConnectionMode.Loose}
         className={`absolute inset-0 ${cursorClass}`}
