@@ -75,7 +75,7 @@ function mapApiNodeToFlowNode(
       position: { x: apiNode.position.x, y: apiNode.position.y },
       data: {
         shape: (apiNode.content?.shape as ShapeType) ?? "rounded",
-        fill: apiNode.content?.fill,
+        fill: apiNode.style?.fill,
         stroke: apiNode.content?.stroke,
         label: apiNode.content?.label,
         onChangeShape,
@@ -106,7 +106,7 @@ function DesignFlowCanvas() {
   const { screenToFlowPosition } = useReactFlow();
   const params = useParams();
   const workspaceId = params.slug as string;
-  const { createNode, updateNode, deleteNode } = useNodeSync({ workspaceId });
+  const { createNode, updateNode, updateNodeId, deleteNode } = useNodeSync({ workspaceId });
   const [selectedNodeIds, setSelectedNodeIds] = useState<string[]>([]);
 
   const updateTextNode = useCallback(
@@ -240,7 +240,7 @@ function DesignFlowCanvas() {
           n.id === nodeId ? { ...n, data: { ...n.data, fill } } : n
         )
       );
-      updateNode(nodeId, { content: { fill } });
+      updateNode(nodeId, { style: { fill } });
     },
     [setNodes, updateNode]
   );
@@ -330,6 +330,12 @@ function DesignFlowCanvas() {
           position: { x: newNode.position.x, y: newNode.position.y },
           size: { w: 256, h: 128 },
           content: { name: "Space" },
+        }).then((res) => {
+          if (res?.status === "SUCCESS" && res.data) {
+            const serverId = res.data.id;
+            updateNodeId(id, serverId);
+            setNodes((prev) => prev.map((n) => (n.id === id ? { ...n, id: serverId } : n)));
+          }
         });
         setActiveTool("move");
         return;
@@ -359,6 +365,12 @@ function DesignFlowCanvas() {
           position: { x: newNode.position.x, y: newNode.position.y },
           size: { w: 150, h: 100 },
           content: { shape: activeShape },
+        }).then((res) => {
+          if (res?.status === "SUCCESS" && res.data) {
+            const serverId = res.data.id;
+            updateNodeId(id, serverId);
+            setNodes((prev) => prev.map((n) => (n.id === id ? { ...n, id: serverId } : n)));
+          }
         });
         setActiveTool("move");
         return;
@@ -379,6 +391,12 @@ function DesignFlowCanvas() {
           position: { x: newNode.position.x, y: newNode.position.y },
           size: { w: 180, h: 64 },
           content: { text: "" },
+        }).then((res) => {
+          if (res?.status === "SUCCESS" && res.data) {
+            const serverId = res.data.id;
+            updateNodeId(id, serverId);
+            setNodes((prev) => prev.map((n) => (n.id === id ? { ...n, id: serverId } : n)));
+          }
         });
         setActiveTool("move");
         return;

@@ -28,6 +28,18 @@ export function useNodeSync({ workspaceId, updateDebounceMs = 500 }: SyncOptions
     [workspaceId],
   )
 
+  const updateNodeId = useCallback(
+    (oldId: string, newId: string) => {
+      const pending = pendingUpdates.current.get(oldId)
+      if (pending) {
+        clearTimeout(pending.timer)
+        pendingUpdates.current.delete(oldId)
+        pendingUpdates.current.set(newId, pending)
+      }
+    },
+    [],
+  )
+
   const updateNode = useCallback(
     (nodeId: string, data: UpdateNodeRequest) => {
       const existing = pendingUpdates.current.get(nodeId)
@@ -81,5 +93,5 @@ export function useNodeSync({ workspaceId, updateDebounceMs = 500 }: SyncOptions
     }
   }, [workspaceId])
 
-  return { createNode, updateNode, deleteNode, flushUpdates }
+  return { createNode, updateNode, updateNodeId, deleteNode, flushUpdates }
 }
