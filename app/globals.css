@@ -3,6 +3,7 @@
 @import "../styles/semantic-tokens.css";
 @import "../styles/typography.css";
 @import "../styles/size-space.css";
+@import "../styles/cursors.css";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 

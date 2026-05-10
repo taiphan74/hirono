@@ -1,0 +1,19 @@
+.canvas-move-mode {
+  cursor: default;
+}
+
+.canvas-draw-mode {
+  cursor: url("/cursors/crosshair-plus.svg") 12 12, crosshair;
+}
+
+.canvas-hand-mode {
+  cursor: grab;
+}
+
+.canvas-hand-mode:active {
+  cursor: grabbing;
+}
+
+.canvas-scale-mode {
+  cursor: nwse-resize;
+}

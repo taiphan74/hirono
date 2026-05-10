@@ -27,3 +27,15 @@ export const useToolbarStore = create<ToolbarState>((set) => ({
   viewMode: "grid",
   setViewMode: (value) => set({ viewMode: value }),
 }))
+
+type DesignToolId = "move" | "drag" | "scale" | "note" | "shape" | "text" | "scan" | "comment" | "grid"
+
+interface DesignToolState {
+  activeTool: DesignToolId
+  setActiveTool: (tool: DesignToolId) => void
+}
+
+export const useDesignToolStore = create<DesignToolState>((set) => ({
+  activeTool: "move",
+  setActiveTool: (tool) => set({ activeTool: tool }),
+}))
