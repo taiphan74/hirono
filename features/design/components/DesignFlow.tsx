@@ -22,10 +22,12 @@ import { useDesignToolStore } from "@/stores/dialog-store";
 import { SectionNode } from "./section";
 import { ShapeNode, type ShapeType } from "./shape-node";
 import { TextNode } from "./text-node";
-import { useCallback, useEffect, useState } from "react";
+import { ImageNode } from "./image-node";
+import { useCallback, useEffect, useRef } from "react";
 import { useNodeSync } from "@/features/design/hooks/use-node-sync";
 import { useParams } from "next/navigation";
 import { nodeService, edgeService, type CanvasNode } from "@/features/design/services/node.service";
+import { KojoAssistant } from "./kojo-assistant";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type FlowNode = Node<any, any>;
@@ -34,6 +36,7 @@ const nodeTypes: NodeTypes = {
   section: SectionNode,
   shapeNode: ShapeNode,
   textNode: TextNode,
+  imageNode: ImageNode,
 };
 
 const cursorClassMap: Record<string, string> = {
@@ -88,6 +91,19 @@ function mapApiNodeToFlowNode(
     }
   }
 
+  if (apiNode.type === "imageNode") {
+    return {
+      id: apiNode.id,
+      type: apiNode.type,
+      position: { x: apiNode.position.x, y: apiNode.position.y },
+      data: {
+        src: apiNode.content?.src ?? "",
+        onResizeEnd: handleResizeEnd,
+      },
+      style: apiNode.size ? { width: apiNode.size.w, height: apiNode.size.h } : { width: 320, height: 200 },
+    }
+  }
+
   return {
     id: apiNode.id,
     type: apiNode.type,
@@ -106,8 +122,8 @@ function DesignFlowCanvas() {
   const { screenToFlowPosition } = useReactFlow();
   const params = useParams();
   const workspaceId = params.slug as string;
-  const { createNode, updateNode, updateNodeId, deleteNode } = useNodeSync({ workspaceId });
-  const [selectedNodeIds, setSelectedNodeIds] = useState<string[]>([]);
+  const { createNode, updateNode, updateNodeId } = useNodeSync({ workspaceId });
+  const mousePosition = useRef({ x: 0, y: 0 });
 
   const updateTextNode = useCallback(
     (id: string, text: string) => {
@@ -132,7 +148,7 @@ function DesignFlowCanvas() {
 
   const handleSelectionChange = useCallback(
     ({ nodes }: { nodes: Node[] }) => {
-      setSelectedNodeIds(nodes.map((n) => n.id));
+      void nodes;
     },
     []
   );
@@ -146,27 +162,6 @@ function DesignFlowCanvas() {
     [workspaceId]
   );
 
-  const handleKeyDown = useCallback(
-    (event: KeyboardEvent) => {
-      if (event.key === "Delete" || event.key === "Backspace") {
-        if (selectedNodeIds.length > 0) {
-          event.preventDefault();
-          selectedNodeIds.forEach((nodeId) => {
-            deleteNode(nodeId);
-            setNodes((nds) => nds.filter((n) => n.id !== nodeId));
-          });
-          setSelectedNodeIds([]);
-        }
-      }
-    },
-    [selectedNodeIds, deleteNode, setNodes, setSelectedNodeIds]
-  );
-
-  useEffect(() => {
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [handleKeyDown]);
-
   const handleResizeEnd = useCallback(
     (nodeId: string, size: { width: number; height: number }) => {
       updateNode(nodeId, {
@@ -175,6 +170,82 @@ function DesignFlowCanvas() {
     },
     [updateNode]
   );
+
+  const handleMouseMove = useCallback(
+    (event: MouseEvent) => {
+      mousePosition.current = screenToFlowPosition({
+        x: event.clientX,
+        y: event.clientY,
+      });
+    },
+    [screenToFlowPosition]
+  );
+
+  useEffect(() => {
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [handleMouseMove]);
+
+  useEffect(() => {
+    const handleKeyDown = async (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'v') {
+        e.preventDefault();
+        try {
+          const items = await navigator.clipboard.read();
+          for (const item of items) {
+            const imageTypes = item.types.filter(t => t.startsWith('image/'));
+            if (imageTypes.length) {
+              const blob = await item.getType(imageTypes[0]);
+              const url = URL.createObjectURL(blob);
+              
+              // Load image to get natural dimensions
+              const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+                const image = new Image();
+                image.onload = () => resolve(image);
+                image.onerror = reject;
+                image.src = url;
+              });
+              
+              const width = img.naturalWidth;
+              const height = img.naturalHeight;
+              const id = crypto.randomUUID();
+              const position = {
+                x: mousePosition.current.x - width / 2,
+                y: mousePosition.current.y - height / 2,
+              };
+
+              const newNode: FlowNode = {
+                id,
+                type: 'imageNode',
+                position,
+                data: { src: url, onResizeEnd: handleResizeEnd },
+                style: { width, height },
+              };
+
+              setNodes((prev) => [...prev, newNode]);
+              createNode(id, {
+                type: 'imageNode',
+                position,
+                size: { w: width, h: height },
+                content: { src: url },
+              }).then((res) => {
+                if (res?.status === 'SUCCESS' && res.data) {
+                  const serverId = res.data.id;
+                  updateNodeId(id, serverId);
+                  setNodes((prev) => prev.map((n) => (n.id === id ? { ...n, id: serverId } : n)));
+                }
+              });
+            }
+          }
+        } catch (err) {
+          console.warn('Clipboard read failed:', err);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [setNodes, createNode, handleResizeEnd, updateNodeId, mousePosition]);
 
   const onConnect = useCallback(
     (connection: Connection) => {
@@ -402,7 +473,7 @@ function DesignFlowCanvas() {
         return;
       }
     },
-    [activeTool, screenToFlowPosition, setNodes, setActiveTool, updateTextNode, createNode, onChangeShape, onChangeFill, onChangeShapeLabel, onCommitShapeLabel, handleResizeEnd]
+    [activeTool, screenToFlowPosition, setNodes, setActiveTool, updateTextNode, createNode, onChangeShape, onChangeFill, onChangeShapeLabel, onCommitShapeLabel, handleResizeEnd, updateNodeId]
   );
 
   return (
@@ -436,6 +507,8 @@ function DesignFlowCanvas() {
           <CanvasControls />
         </div>
       </div>
+
+      <KojoAssistant />
     </>
   );
 }
