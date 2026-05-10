@@ -1,15 +1,16 @@
 "use client"
 
 import { cn } from "@/lib/utils"
-import { NodeResizer, type Node, type NodeProps } from "@xyflow/react"
+import { NodeResizer, type Node, type NodeProps, type ResizeParams } from "@xyflow/react"
 
 export type SectionNodeData = {
   name: string
+  onResizeEnd?: (id: string, size: { width: number; height: number }) => void
 }
 
 export type SectionNodeType = Node<SectionNodeData, "section">
 
-export function SectionNode({ data, selected }: NodeProps<SectionNodeType>) {
+export function SectionNode({ id, data, selected }: NodeProps<SectionNodeType>) {
   return (
     <div
       className={cn(
@@ -24,6 +25,9 @@ export function SectionNode({ data, selected }: NodeProps<SectionNodeType>) {
         color="#3b82f6"
         lineClassName="!border-blue-500"
         handleClassName="!h-3 !w-3 !rounded-sm !border !border-blue-500 !bg-white"
+        onResizeEnd={(_, params: ResizeParams) => {
+          data.onResizeEnd?.(id, { width: params.width, height: params.height })
+        }}
       />
 
       <div className="inline-flex items-center justify-center rounded-lg border border-[#D9D9D9] bg-[#f5f6f8] px-3 py-1">

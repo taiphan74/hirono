@@ -8,19 +8,27 @@ import {
   ReactFlowProvider,
   useReactFlow,
   type NodeTypes,
+  type Node,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { CanvasControls } from "./CanvasControls";
 import { Toolbar } from "./Toolbar";
 import { useDesignToolStore } from "@/stores/dialog-store";
 import { SectionNode } from "./section";
-import type { Node } from "@xyflow/react";
-import { useCallback } from "react";
+import { ShapeNode, type ShapeType } from "./shape-node";
+import { TextNode } from "./text-node";
+import { useCallback, useEffect } from "react";
+import { useNodeSync } from "@/features/design/hooks/use-node-sync";
+import { useParams } from "next/navigation";
+import { nodeService, type CanvasNode } from "@/features/design/services/node.service";
 
-type SectionNode = Node<{ name: string }, "section">;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type FlowNode = Node<any, any>;
 
 const nodeTypes: NodeTypes = {
   section: SectionNode,
+  shapeNode: ShapeNode,
+  textNode: TextNode,
 };
 
 const cursorClassMap: Record<string, string> = {
@@ -28,6 +36,7 @@ const cursorClassMap: Record<string, string> = {
   drag: "canvas-hand-mode",
   scale: "canvas-scale-mode",
   note: "canvas-draw-mode",
+  section: "canvas-draw-mode",
   shape: "canvas-draw-mode",
   text: "canvas-draw-mode",
   scan: "",
@@ -35,37 +44,222 @@ const cursorClassMap: Record<string, string> = {
   grid: "",
 };
 
+function mapApiNodeToFlowNode(
+  apiNode: CanvasNode,
+  updateTextNode: (id: string, text: string) => void,
+  handleResizeEnd: (id: string, size: { width: number; height: number }) => void,
+  onChangeShape: (id: string, shape: ShapeType) => void,
+  onChangeShapeLabel: (id: string, label: string) => void,
+  onCommitShapeLabel: (id: string, label: string) => void,
+): FlowNode {
+  if (apiNode.type === "textNode") {
+    return {
+      id: apiNode.id,
+      type: apiNode.type,
+      position: { x: apiNode.position.x, y: apiNode.position.y },
+      data: { text: apiNode.content?.text ?? "", onChange: updateTextNode, onResizeEnd: handleResizeEnd },
+      style: apiNode.size ? { width: apiNode.size.w, height: apiNode.size.h } : undefined,
+    }
+  }
+
+  if (apiNode.type === "shapeNode") {
+    return {
+      id: apiNode.id,
+      type: apiNode.type,
+      position: { x: apiNode.position.x, y: apiNode.position.y },
+      data: {
+        shape: (apiNode.content?.shape as ShapeType) ?? "rounded",
+        fill: apiNode.content?.fill,
+        stroke: apiNode.content?.stroke,
+        label: apiNode.content?.label,
+        onChangeShape,
+        onChangeLabel: onChangeShapeLabel,
+        onCommitLabel: onCommitShapeLabel,
+        onResizeEnd: handleResizeEnd,
+      },
+      style: apiNode.size ? { width: apiNode.size.w, height: apiNode.size.h } : { width: 150, height: 100 },
+    }
+  }
+
+  return {
+    id: apiNode.id,
+    type: apiNode.type,
+    position: { x: apiNode.position.x, y: apiNode.position.y },
+    data: { name: apiNode.content?.name ?? "Space", onResizeEnd: handleResizeEnd },
+    style: apiNode.size ? { width: apiNode.size.w, height: apiNode.size.h } : undefined,
+  }
+}
+
 function DesignFlowCanvas() {
-  const [nodes, setNodes, onNodesChange] = useNodesState<SectionNode>([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState<FlowNode>([]);
   const [edges, , onEdgesChange] = useEdgesState([]);
   const activeTool = useDesignToolStore((s) => s.activeTool);
   const setActiveTool = useDesignToolStore((s) => s.setActiveTool);
   const cursorClass = cursorClassMap[activeTool] ?? "";
   const { screenToFlowPosition } = useReactFlow();
+  const params = useParams();
+  const workspaceId = params.slug as string;
+  const { createNode, updateNode } = useNodeSync({ workspaceId });
+
+  const updateTextNode = useCallback(
+    (id: string, text: string) => {
+      setNodes((nds) =>
+        nds.map((n) =>
+          n.id === id ? { ...n, data: { ...n.data, text } } : n
+        )
+      );
+      updateNode(id, { content: { text } });
+    },
+    [setNodes, updateNode]
+  );
+
+  const handleNodeDragStop = useCallback(
+    (_: React.MouseEvent, node: FlowNode) => {
+      updateNode(node.id, {
+        position: { x: node.position.x, y: node.position.y },
+      });
+    },
+    [updateNode]
+  );
+
+  const handleResizeEnd = useCallback(
+    (nodeId: string, size: { width: number; height: number }) => {
+      updateNode(nodeId, {
+        size: { w: size.width, h: size.height },
+      });
+    },
+    [updateNode]
+  );
+
+  const onChangeShape = useCallback(
+    (nodeId: string, shape: ShapeType) => {
+      setNodes((nds) =>
+        nds.map((n) =>
+          n.id === nodeId ? { ...n, data: { ...n.data, shape } } : n
+        )
+      );
+      updateNode(nodeId, { content: { shape } });
+    },
+    [setNodes, updateNode]
+  );
+
+  const onChangeShapeLabel = useCallback(
+    (nodeId: string, label: string) => {
+      setNodes((nds) =>
+        nds.map((n) =>
+          n.id === nodeId ? { ...n, data: { ...n.data, label } } : n
+        )
+      );
+    },
+    [setNodes]
+  );
+
+  const onCommitShapeLabel = useCallback(
+    (nodeId: string, label: string) => {
+      setNodes((nds) =>
+        nds.map((n) =>
+          n.id === nodeId ? { ...n, data: { ...n.data, label } } : n
+        )
+      );
+      updateNode(nodeId, { content: { label } });
+    },
+    [setNodes, updateNode]
+  );
+
+  useEffect(() => {
+    if (!workspaceId) return;
+    nodeService.getNodes(workspaceId).then((res) => {
+      if (res.status === "SUCCESS" && res.data) {
+        const flowNodes = res.data.map((n) =>
+          mapApiNodeToFlowNode(
+            n,
+            updateTextNode,
+            handleResizeEnd,
+            onChangeShape,
+            onChangeShapeLabel,
+            onCommitShapeLabel
+          )
+        );
+        setNodes(flowNodes);
+      }
+    }).catch(console.error);
+  }, [workspaceId, setNodes, updateTextNode, handleResizeEnd, onChangeShape, onChangeShapeLabel, onCommitShapeLabel]);
 
   const handlePaneClick = useCallback(
     (event: React.MouseEvent) => {
-      if (activeTool !== "shape") return;
-
       const position = screenToFlowPosition({
         x: event.clientX,
         y: event.clientY,
       });
 
-      const newNode: SectionNode = {
-        id: crypto.randomUUID(),
-        type: "section",
-        position: {
-          x: position.x - 128,
-          y: position.y - 16,
-        },
-        data: { name: "Space" },
-      };
+      if (activeTool === "section") {
+        const id = crypto.randomUUID();
+        const newNode: FlowNode = {
+          id,
+          type: "section",
+          position: { x: position.x - 128, y: position.y - 16 },
+          data: { name: "Space", onResizeEnd: handleResizeEnd },
+        };
+        setNodes((prev) => [...prev, newNode]);
+        createNode(id, {
+          type: "section",
+          position: { x: newNode.position.x, y: newNode.position.y },
+          size: { w: 256, h: 128 },
+          content: { name: "Space" },
+        });
+        setActiveTool("move");
+        return;
+      }
 
-      setNodes((prev) => [...prev, newNode]);
-      setActiveTool("move");
+      if (activeTool === "shape") {
+        const activeShape = useDesignToolStore.getState().activeShape;
+        const id = crypto.randomUUID();
+        const newNode: FlowNode = {
+          id,
+          type: "shapeNode",
+          position: { x: position.x - 75, y: position.y - 50 },
+          data: {
+            shape: activeShape,
+            label: "",
+            onChangeShape,
+            onChangeLabel: onChangeShapeLabel,
+            onCommitLabel: onCommitShapeLabel,
+            onResizeEnd: handleResizeEnd,
+          },
+          style: { width: 150, height: 100 },
+        };
+        setNodes((prev) => [...prev, newNode]);
+        createNode(id, {
+          type: "shapeNode",
+          position: { x: newNode.position.x, y: newNode.position.y },
+          size: { w: 150, h: 100 },
+          content: { shape: activeShape },
+        });
+        setActiveTool("move");
+        return;
+      }
+
+      if (activeTool === "text") {
+        const id = crypto.randomUUID();
+        const newNode: FlowNode = {
+          id,
+          type: "textNode",
+          position: { x: position.x - 90, y: position.y - 24 },
+          data: { text: "", autoFocus: true, onChange: updateTextNode, onResizeEnd: handleResizeEnd },
+          style: { width: 180, height: 64 },
+        };
+        setNodes((prev) => [...prev, newNode]);
+        createNode(id, {
+          type: "textNode",
+          position: { x: newNode.position.x, y: newNode.position.y },
+          size: { w: 180, h: 64 },
+          content: { text: "" },
+        });
+        setActiveTool("move");
+        return;
+      }
     },
-    [activeTool, screenToFlowPosition, setNodes, setActiveTool]
+    [activeTool, screenToFlowPosition, setNodes, setActiveTool, updateTextNode, createNode, onChangeShape, handleResizeEnd]
   );
 
   return (
@@ -77,6 +271,7 @@ function DesignFlowCanvas() {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onPaneClick={handlePaneClick}
+        onNodeDragStop={handleNodeDragStop}
         className={`absolute inset-0 ${cursorClass}`}
       >
         <Background />

@@ -28,14 +28,26 @@ export const useToolbarStore = create<ToolbarState>((set) => ({
   setViewMode: (value) => set({ viewMode: value }),
 }))
 
-type DesignToolId = "move" | "drag" | "scale" | "note" | "shape" | "text" | "scan" | "comment" | "grid"
+type DesignToolId = "move" | "drag" | "scale" | "section" | "shape" | "text" | "scan" | "comment" | "grid"
+
+type ShapeId =
+  | "rect"
+  | "rounded"
+  | "circle"
+  | "diamond"
+  | "triangle"
+  | "hexagon"
 
 interface DesignToolState {
   activeTool: DesignToolId
   setActiveTool: (tool: DesignToolId) => void
+  activeShape: ShapeId
+  setActiveShape: (shape: ShapeId) => void
 }
 
 export const useDesignToolStore = create<DesignToolState>((set) => ({
   activeTool: "move",
   setActiveTool: (tool) => set({ activeTool: tool }),
+  activeShape: "rect",
+  setActiveShape: (shape) => set({ activeShape: shape }),
 }))

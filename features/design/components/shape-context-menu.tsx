@@ -3,28 +3,43 @@
 import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Hand, Move, Scaling } from "lucide-react"
+import {
+  RectangleHorizontal,
+  Square,
+  Circle,
+  Diamond,
+  Triangle,
+  Hexagon,
+} from "lucide-react"
 import { useDesignToolStore } from "@/stores/dialog-store"
+import type { ShapeType } from "./shape-node"
 
-type ToolId = "move" | "drag" | "scale"
+export type ShapeId = ShapeType
 
-const toolItems = [
-  { id: "move" as ToolId, label: "Move", shortcut: "V", Icon: Move },
-  { id: "drag" as ToolId, label: "Drag", shortcut: "H", Icon: Hand },
-  { id: "scale" as ToolId, label: "Scale", shortcut: "K", Icon: Scaling },
+const shapeItems: {
+  id: ShapeId
+  label: string
+  Icon: React.ComponentType<{ className?: string }>
+}[] = [
+  { id: "rect", label: "Rectangle", Icon: RectangleHorizontal },
+  { id: "rounded", label: "Rounded", Icon: Square },
+  { id: "circle", label: "Circle", Icon: Circle },
+  { id: "diamond", label: "Diamond", Icon: Diamond },
+  { id: "triangle", label: "Triangle", Icon: Triangle },
+  { id: "hexagon", label: "Hexagon", Icon: Hexagon },
 ]
 
-export type { ToolId }
-export { toolItems }
+export { shapeItems }
 
-interface ToolbarContextMenuProps {
+interface ShapeContextMenuProps {
   children: React.ReactNode
 }
 
-export function ToolbarContextMenu({ children }: ToolbarContextMenuProps) {
+export function ShapeContextMenu({ children }: ShapeContextMenuProps) {
   const [open, setOpen] = useState(false)
   const activeTool = useDesignToolStore((s) => s.activeTool)
   const setActiveTool = useDesignToolStore((s) => s.setActiveTool)
+  const activeShape = useDesignToolStore((s) => s.activeShape)
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -39,15 +54,16 @@ export function ToolbarContextMenu({ children }: ToolbarContextMenuProps) {
         </div>
       </PopoverTrigger>
       <PopoverContent side="top" align="center" className="flex min-w-fit items-center gap-1 rounded-2xl border-[#D5D8DD] bg-white px-3 py-2 shadow-[0px_1px_4px_0px_rgba(12,12,13,0.05),0px_1px_4px_0px_rgba(12,12,13,0.1)]">
-        {toolItems.map((item) => {
-          const isActive = activeTool === item.id
+        {shapeItems.map((item) => {
+          const isActive = activeTool === "shape" && activeShape === item.id
           return (
             <button
               key={item.id}
               type="button"
               className="flex size-9 items-center justify-center rounded-[4px] p-0 hover:bg-[#F5F5F5]"
               onClick={() => {
-                setActiveTool(item.id)
+                setActiveTool("shape")
+                useDesignToolStore.getState().setActiveShape(item.id)
                 setOpen(false)
               }}
             >

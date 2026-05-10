@@ -15,15 +15,16 @@ import {
 } from "lucide-react"
 import { useCallback, useEffect } from "react"
 import { ToolbarContextMenu } from "@/features/design/components/toolbar-context-menu"
+import { ShapeContextMenu, shapeItems } from "@/features/design/components/shape-context-menu"
 import { useDesignToolStore } from "@/stores/dialog-store"
 
-type ToolId = "move" | "drag" | "scale" | "note" | "shape" | "text" | "scan" | "comment" | "grid"
+type ToolId = "move" | "drag" | "scale" | "section" | "shape" | "text" | "scan" | "comment" | "grid"
 
 const toolIconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   move: Send,
   drag: Hand,
   scale: Scaling,
-  note: StickyNote,
+  section: StickyNote,
   shape: Square,
   text: Type,
   scan: ScanText,
@@ -33,7 +34,7 @@ const toolIconMap: Record<string, React.ComponentType<{ className?: string }>> =
 
 const tools: { id: ToolId; icon: React.ComponentType<{ className?: string }>; variant: "primary" | "secondarySubtle" }[] = [
   { id: "move", icon: Send, variant: "primary" },
-  { id: "note", icon: StickyNote, variant: "secondarySubtle" },
+  { id: "section", icon: StickyNote, variant: "secondarySubtle" },
   { id: "shape", icon: Square, variant: "secondarySubtle" },
   { id: "text", icon: Type, variant: "secondarySubtle" },
   { id: "scan", icon: ScanText, variant: "secondarySubtle" },
@@ -43,6 +44,7 @@ const tools: { id: ToolId; icon: React.ComponentType<{ className?: string }>; va
 
 export function Toolbar({ className }: { className?: string }) {
   const activeTool = useDesignToolStore((s) => s.activeTool)
+  const activeShape = useDesignToolStore((s) => s.activeShape)
   const setActiveTool = useDesignToolStore((s) => s.setActiveTool)
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
@@ -86,7 +88,7 @@ export function Toolbar({ className }: { className?: string }) {
       </ToolbarContextMenu>
       {restTools.map((tool) => {
         const isActive = activeTool === tool.id
-        return (
+        const button = (
           <Button
             key={tool.id}
             variant={isActive ? "primary" : "secondarySubtle"}
@@ -97,6 +99,24 @@ export function Toolbar({ className }: { className?: string }) {
             <tool.icon className="size-5" />
           </Button>
         )
+
+        if (tool.id === "shape") {
+          const ShapeIcon = shapeItems.find((s) => s.id === activeShape)?.Icon ?? Square
+          return (
+            <ShapeContextMenu key={tool.id}>
+              <Button
+                variant={isActive ? "primary" : "secondarySubtle"}
+                size="sm"
+                className="size-9 p-0"
+                onClick={() => setActiveTool("shape")}
+              >
+                <ShapeIcon className="size-5" />
+              </Button>
+            </ShapeContextMenu>
+          )
+        }
+
+        return button
       })}
     </div>
   )
