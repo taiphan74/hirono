@@ -5,12 +5,12 @@ import {
   Handle,
   Position,
   NodeResizer,
-  NodeToolbar,
   type Node,
   type NodeProps,
   type ResizeParams,
 } from "@xyflow/react"
 import { cn } from "@/lib/utils"
+import { Copy, Circle, List, ChevronDown } from "lucide-react"
 
 export type ShapeType =
   | "rect"
@@ -20,12 +20,24 @@ export type ShapeType =
   | "triangle"
   | "hexagon"
 
+const fillColors = [
+  "#ffffff",
+  "#f5f5f5",
+  "#dbeafe",
+  "#dcfce7",
+  "#fee2e2",
+  "#fef3c7",
+  "#ede9fe",
+  "#111827",
+]
+
 export type ShapeNodeData = {
   shape: ShapeType
   fill?: string
   stroke?: string
   label?: string
   onChangeShape?: (id: string, shape: ShapeType) => void
+  onChangeFill?: (id: string, fill: string) => void
   onChangeLabel?: (id: string, label: string) => void
   onCommitLabel?: (id: string, label: string) => void
   onResizeEnd?: (id: string, size: { width: number; height: number }) => void
@@ -123,6 +135,7 @@ function ShapeSvg({
 export function ShapeNode({ id, data, selected }: NodeProps<ShapeNodeType>) {
   const [isEditing, setIsEditing] = useState(false)
   const [labelDraft, setLabelDraft] = useState(data.label ?? "")
+  const [fillOpen, setFillOpen] = useState(false)
 
   useEffect(() => {
     if (!isEditing) {
@@ -163,24 +176,73 @@ export function ShapeNode({ id, data, selected }: NodeProps<ShapeNodeType>) {
         }}
       />
 
-      <NodeToolbar
-        isVisible={selected}
-        position={Position.Top}
-        className="flex gap-1 rounded-xl border bg-white p-1 shadow-lg"
-      >
-        {shapes.map((shape) => (
-          <button
-            key={shape}
-            onClick={() => data.onChangeShape?.(id, shape)}
-            className={cn(
-              "nodrag rounded-md px-2 py-1 text-xs hover:bg-muted",
-              data.shape === shape && "bg-blue-600 text-white"
-            )}
-          >
-            {shape}
-          </button>
-        ))}
-      </NodeToolbar>
+      {selected && (
+        <div className="nodrag absolute left-1/2 -translate-x-1/2 flex translate-y-[-100%] flex-col items-center gap-1">
+          {fillOpen && (
+            <div className="flex items-center gap-1 rounded-xl border border-[#E5E7EB] bg-white px-2 py-1.5 shadow-lg">
+              {fillColors.map((color) => (
+                <button
+                  key={color}
+                  type="button"
+                  onClick={() => {
+                    data.onChangeFill?.(id, color)
+                    setFillOpen(false)
+                  }}
+                  className={cn(
+                    "size-6 rounded-full border border-[#D1D5DB] transition-transform hover:scale-110",
+                    data.fill === color && "ring-2 ring-[#5036ef] ring-offset-2"
+                  )}
+                  style={{ backgroundColor: color }}
+                />
+              ))}
+            </div>
+          )}
+          <div className="flex items-center gap-1 rounded-xl border border-[#E5E7EB] bg-white px-2 py-1.5 shadow-lg">
+            <div className="flex items-center gap-0.5">
+              <button
+                type="button"
+                className="flex size-7 items-center justify-center rounded-md p-1 hover:bg-[#F5F5F5]"
+              >
+                <Copy className="size-4 text-[#4B5563]" strokeWidth={2} />
+              </button>
+              <button
+                type="button"
+                className="flex size-7 items-center justify-center rounded-md p-1 hover:bg-[#F5F5F5]"
+              >
+                <ChevronDown className="size-3.5 text-[#4B5563]" />
+              </button>
+            </div>
+
+            <div className="h-5 w-px bg-[#E5E7EB]" />
+
+            <button
+              type="button"
+              onClick={() => setFillOpen((v) => !v)}
+              className={cn("flex cursor-pointer items-center gap-0.5 rounded-md p-1 hover:bg-[#F5F5F5]", fillOpen && "bg-[#F5F5F5]")}
+            >
+              <Circle className="size-4 text-[#4B5563]" strokeWidth={2} />
+              <ChevronDown className={cn("size-3.5 text-[#4B5563] transition-transform", fillOpen && "rotate-180")} />
+            </button>
+
+            <div className="h-5 w-px bg-[#E5E7EB]" />
+
+            <div className="flex items-center gap-0.5">
+              <button
+                type="button"
+                className="flex size-7 items-center justify-center rounded-md p-1 hover:bg-[#F5F5F5]"
+              >
+                <List className="size-4 text-[#4B5563]" strokeWidth={2} />
+              </button>
+              <button
+                type="button"
+                className="flex size-7 items-center justify-center rounded-md p-1 hover:bg-[#F5F5F5]"
+              >
+                <ChevronDown className="size-3.5 text-[#4B5563]" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <svg
         viewBox="0 0 100 100"

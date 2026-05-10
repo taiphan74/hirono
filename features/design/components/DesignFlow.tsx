@@ -54,6 +54,7 @@ function mapApiNodeToFlowNode(
   updateTextNode: (id: string, text: string) => void,
   handleResizeEnd: (id: string, size: { width: number; height: number }) => void,
   onChangeShape: (id: string, shape: ShapeType) => void,
+  onChangeFill: (id: string, fill: string) => void,
   onChangeShapeLabel: (id: string, label: string) => void,
   onCommitShapeLabel: (id: string, label: string) => void,
 ): FlowNode {
@@ -78,6 +79,7 @@ function mapApiNodeToFlowNode(
         stroke: apiNode.content?.stroke,
         label: apiNode.content?.label,
         onChangeShape,
+        onChangeFill,
         onChangeLabel: onChangeShapeLabel,
         onCommitLabel: onCommitShapeLabel,
         onResizeEnd: handleResizeEnd,
@@ -135,21 +137,35 @@ function DesignFlowCanvas() {
     []
   );
 
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if ((event.key === "Delete" || event.key === "Backspace") && selectedNodeIds.length > 0) {
-        event.preventDefault();
-        selectedNodeIds.forEach((nodeId) => {
-          deleteNode(nodeId);
-          setNodes((nds) => nds.filter((n) => n.id !== nodeId));
-        });
-        setSelectedNodeIds([]);
-      }
-    };
+  const onEdgesDelete = useCallback(
+    (deletedEdges: Edge[]) => {
+      deletedEdges.forEach((edge) => {
+        edgeService.deleteEdge(workspaceId, edge.id).catch(console.error);
+      });
+    },
+    [workspaceId]
+  );
 
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      if (event.key === "Delete" || event.key === "Backspace") {
+        if (selectedNodeIds.length > 0) {
+          event.preventDefault();
+          selectedNodeIds.forEach((nodeId) => {
+            deleteNode(nodeId);
+            setNodes((nds) => nds.filter((n) => n.id !== nodeId));
+          });
+          setSelectedNodeIds([]);
+        }
+      }
+    },
+    [selectedNodeIds, deleteNode, setNodes, setSelectedNodeIds]
+  );
+
+  useEffect(() => {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [selectedNodeIds, deleteNode, setNodes]);
+  }, [handleKeyDown]);
 
   const handleResizeEnd = useCallback(
     (nodeId: string, size: { width: number; height: number }) => {
@@ -171,6 +187,7 @@ function DesignFlowCanvas() {
             ...connection,
             id: edgeId,
             type: "smoothstep",
+            selectable: true,
             style: {
               stroke: "#111827",
               strokeWidth: 2,
@@ -216,6 +233,18 @@ function DesignFlowCanvas() {
     [setNodes, updateNode]
   );
 
+  const onChangeFill = useCallback(
+    (nodeId: string, fill: string) => {
+      setNodes((nds) =>
+        nds.map((n) =>
+          n.id === nodeId ? { ...n, data: { ...n.data, fill } } : n
+        )
+      );
+      updateNode(nodeId, { content: { fill } });
+    },
+    [setNodes, updateNode]
+  );
+
   const onChangeShapeLabel = useCallback(
     (nodeId: string, label: string) => {
       setNodes((nds) =>
@@ -249,6 +278,7 @@ function DesignFlowCanvas() {
             updateTextNode,
             handleResizeEnd,
             onChangeShape,
+            onChangeFill,
             onChangeShapeLabel,
             onCommitShapeLabel
           )
@@ -256,7 +286,7 @@ function DesignFlowCanvas() {
         setNodes(flowNodes);
       }
     }).catch(console.error);
-  }, [workspaceId, setNodes, updateTextNode, handleResizeEnd, onChangeShape, onChangeShapeLabel, onCommitShapeLabel]);
+  }, [workspaceId, setNodes, updateTextNode, handleResizeEnd, onChangeShape, onChangeFill, onChangeShapeLabel, onCommitShapeLabel]);
 
   useEffect(() => {
     if (!workspaceId) return;
@@ -269,8 +299,10 @@ function DesignFlowCanvas() {
           sourceHandle: e.from.anchor,
           targetHandle: e.to.anchor,
           type: e.type || "smoothstep",
+          selectable: true,
           style: e.style || { stroke: "#111827", strokeWidth: 2 },
           markerEnd: { type: MarkerType.ArrowClosed },
+          interactionWidth: 20,
         }));
         setEdges(flowEdges);
       }
@@ -314,6 +346,7 @@ function DesignFlowCanvas() {
             shape: activeShape,
             label: "",
             onChangeShape,
+            onChangeFill,
             onChangeLabel: onChangeShapeLabel,
             onCommitLabel: onCommitShapeLabel,
             onResizeEnd: handleResizeEnd,
@@ -351,7 +384,7 @@ function DesignFlowCanvas() {
         return;
       }
     },
-    [activeTool, screenToFlowPosition, setNodes, setActiveTool, updateTextNode, createNode, onChangeShape, onChangeShapeLabel, onCommitShapeLabel, handleResizeEnd]
+    [activeTool, screenToFlowPosition, setNodes, setActiveTool, updateTextNode, createNode, onChangeShape, onChangeFill, onChangeShapeLabel, onCommitShapeLabel, handleResizeEnd]
   );
 
   return (
@@ -366,6 +399,7 @@ function DesignFlowCanvas() {
         onPaneClick={handlePaneClick}
         onNodeDragStop={handleNodeDragStop}
         onSelectionChange={handleSelectionChange}
+        onEdgesDelete={onEdgesDelete}
         connectionMode={ConnectionMode.Loose}
         className={`absolute inset-0 ${cursorClass}`}
         fitView
@@ -373,6 +407,7 @@ function DesignFlowCanvas() {
         nodesDraggable={activeTool !== "drag" && activeTool !== "scale"}
         elementsSelectable={activeTool !== "drag"}
         selectionOnDrag={activeTool !== "drag"}
+        deleteKeyCode={["Backspace", "Delete"]}
       >
         <Background />
       </ReactFlow>
