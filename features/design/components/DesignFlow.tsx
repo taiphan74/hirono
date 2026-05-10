@@ -23,11 +23,13 @@ import { SectionNode } from "./section";
 import { ShapeNode, type ShapeType } from "./shape-node";
 import { TextNode } from "./text-node";
 import { ImageNode } from "./image-node";
+import { StickyNoteNode, type StickyNoteColor } from "./sticky-note-node";
 import { useCallback, useEffect, useRef } from "react";
 import { useNodeSync } from "@/features/design/hooks/use-node-sync";
 import { useParams } from "next/navigation";
 import { nodeService, edgeService, type CanvasNode } from "@/features/design/services/node.service";
 import { KojoAssistant } from "./kojo-assistant";
+import { AssistantProvider } from "./assistant/runtime";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type FlowNode = Node<any, any>;
@@ -37,16 +39,17 @@ const nodeTypes: NodeTypes = {
   shapeNode: ShapeNode,
   textNode: TextNode,
   imageNode: ImageNode,
+  stickyNote: StickyNoteNode,
 };
 
 const cursorClassMap: Record<string, string> = {
   move: "canvas-move-mode",
   drag: "canvas-hand-mode",
   scale: "canvas-scale-mode",
-  note: "canvas-draw-mode",
   section: "canvas-draw-mode",
   shape: "canvas-draw-mode",
   text: "canvas-draw-mode",
+  note: "canvas-draw-mode",
   scan: "",
   comment: "",
   grid: "",
@@ -60,6 +63,9 @@ function mapApiNodeToFlowNode(
   onChangeFill: (id: string, fill: string) => void,
   onChangeShapeLabel: (id: string, label: string) => void,
   onCommitShapeLabel: (id: string, label: string) => void,
+  updateStickyNoteText: (id: string, text: string) => void,
+  commitStickyNoteText: (id: string, text: string) => void,
+  onChangeStickyNoteColor: (id: string, color: string) => void,
 ): FlowNode {
   if (apiNode.type === "textNode") {
     return {
@@ -104,6 +110,24 @@ function mapApiNodeToFlowNode(
     }
   }
 
+  if (apiNode.type === "stickyNote") {
+    return {
+      id: apiNode.id,
+      type: apiNode.type,
+      position: { x: apiNode.position.x, y: apiNode.position.y },
+      data: {
+        text: apiNode.content?.text ?? "",
+        author: apiNode.content?.author ?? "",
+        color: (apiNode.content?.color as StickyNoteColor) ?? "pink",
+        onChangeText: updateStickyNoteText,
+        onCommitText: commitStickyNoteText,
+        onChangeColor: onChangeStickyNoteColor,
+        onResizeEnd: handleResizeEnd,
+      },
+      style: apiNode.size ? { width: apiNode.size.w, height: apiNode.size.h } : { width: 240, height: 180 },
+    }
+  }
+
   return {
     id: apiNode.id,
     type: apiNode.type,
@@ -133,6 +157,41 @@ function DesignFlowCanvas() {
         )
       );
       updateNode(id, { content: { text } });
+    },
+    [setNodes, updateNode]
+  );
+
+  const updateStickyNoteText = useCallback(
+    (id: string, text: string) => {
+      setNodes((nds) =>
+        nds.map((n) =>
+          n.id === id ? { ...n, data: { ...n.data, text } } : n
+        )
+      );
+    },
+    [setNodes]
+  );
+
+  const commitStickyNoteText = useCallback(
+    (id: string, text: string) => {
+      setNodes((nds) =>
+        nds.map((n) =>
+          n.id === id ? { ...n, data: { ...n.data, text } } : n
+        )
+      );
+      updateNode(id, { content: { text } });
+    },
+    [setNodes, updateNode]
+  );
+
+  const onChangeStickyNoteColor = useCallback(
+    (id: string, color: string) => {
+      setNodes((nds) =>
+        nds.map((n) =>
+          n.id === id ? { ...n, data: { ...n.data, color } } : n
+        )
+      );
+      updateNode(id, { content: { color } });
     },
     [setNodes, updateNode]
   );
@@ -365,13 +424,16 @@ function DesignFlowCanvas() {
             onChangeShape,
             onChangeFill,
             onChangeShapeLabel,
-            onCommitShapeLabel
+            onCommitShapeLabel,
+            updateStickyNoteText,
+            commitStickyNoteText,
+            onChangeStickyNoteColor
           )
         );
         setNodes(flowNodes);
       }
     }).catch(console.error);
-  }, [workspaceId, setNodes, updateTextNode, handleResizeEnd, onChangeShape, onChangeFill, onChangeShapeLabel, onCommitShapeLabel]);
+  }, [workspaceId, setNodes, updateTextNode, handleResizeEnd, onChangeShape, onChangeFill, onChangeShapeLabel, onCommitShapeLabel, updateStickyNoteText, commitStickyNoteText, onChangeStickyNoteColor]);
 
   useEffect(() => {
     if (!workspaceId) return;
@@ -486,8 +548,43 @@ function DesignFlowCanvas() {
         setActiveTool("move");
         return;
       }
+
+      if (activeTool === "note") {
+        const id = crypto.randomUUID();
+        const newNode: FlowNode = {
+          id,
+          type: "stickyNote",
+          position: { x: position.x - 120, y: position.y - 90 },
+          data: {
+            text: "",
+            author: "",
+            color: "pink",
+            autoFocus: true,
+            onChangeText: updateStickyNoteText,
+            onCommitText: commitStickyNoteText,
+            onChangeColor: onChangeStickyNoteColor,
+            onResizeEnd: handleResizeEnd,
+          },
+          style: { width: 240, height: 180 },
+        };
+        setNodes((prev) => [...prev, newNode]);
+        createNode(id, {
+          type: "stickyNote",
+          position: { x: newNode.position.x, y: newNode.position.y },
+          size: { w: 240, h: 180 },
+          content: { text: "", author: "", color: "pink" },
+        }).then((res) => {
+          if (res?.status === "SUCCESS" && res.data) {
+            const serverId = res.data.id;
+            updateNodeId(id, serverId);
+            setNodes((prev) => prev.map((n) => (n.id === id ? { ...n, id: serverId } : n)));
+          }
+        });
+        setActiveTool("move");
+        return;
+      }
     },
-    [activeTool, screenToFlowPosition, setNodes, setActiveTool, updateTextNode, createNode, onChangeShape, onChangeFill, onChangeShapeLabel, onCommitShapeLabel, handleResizeEnd, updateNodeId]
+    [activeTool, screenToFlowPosition, setNodes, setActiveTool, updateTextNode, createNode, onChangeShape, onChangeFill, onChangeShapeLabel, onCommitShapeLabel, handleResizeEnd, updateNodeId, updateStickyNoteText, commitStickyNoteText, onChangeStickyNoteColor]
   );
 
   return (
@@ -523,7 +620,9 @@ function DesignFlowCanvas() {
         </div>
       </div>
 
-      <KojoAssistant />
+      <AssistantProvider>
+        <KojoAssistant />
+      </AssistantProvider>
     </>
   );
 }

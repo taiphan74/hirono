@@ -7,18 +7,18 @@ import {
   StickyNote,
   Square,
   Type,
-  ScanText,
   MessageCircle,
   Grid2x2Plus,
   Hand,
   Scaling,
+  NotebookPen,
 } from "lucide-react"
 import { useCallback, useEffect } from "react"
 import { ToolbarContextMenu } from "@/features/design/components/toolbar-context-menu"
 import { ShapeContextMenu, shapeItems } from "@/features/design/components/shape-context-menu"
 import { useDesignToolStore } from "@/stores/dialog-store"
 
-type ToolId = "move" | "drag" | "scale" | "section" | "shape" | "text" | "scan" | "comment" | "grid"
+type ToolId = "move" | "drag" | "scale" | "section" | "shape" | "text" | "note" | "comment" | "grid"
 
 const toolIconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   move: MousePointer2,
@@ -27,7 +27,7 @@ const toolIconMap: Record<string, React.ComponentType<{ className?: string }>> =
   section: StickyNote,
   shape: Square,
   text: Type,
-  scan: ScanText,
+  note: NotebookPen,
   comment: MessageCircle,
   grid: Grid2x2Plus,
 }
@@ -37,7 +37,7 @@ const tools: { id: ToolId; icon: React.ComponentType<{ className?: string }>; va
   { id: "section", icon: StickyNote, variant: "secondarySubtle" },
   { id: "shape", icon: Square, variant: "secondarySubtle" },
   { id: "text", icon: Type, variant: "secondarySubtle" },
-  { id: "scan", icon: ScanText, variant: "secondarySubtle" },
+  { id: "note", icon: NotebookPen, variant: "secondarySubtle" },
   { id: "comment", icon: MessageCircle, variant: "secondarySubtle" },
   { id: "grid", icon: Grid2x2Plus, variant: "secondarySubtle" },
 ]

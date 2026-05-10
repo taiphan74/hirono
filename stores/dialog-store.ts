@@ -28,7 +28,7 @@ export const useToolbarStore = create<ToolbarState>((set) => ({
   setViewMode: (value) => set({ viewMode: value }),
 }))
 
-type DesignToolId = "move" | "drag" | "scale" | "section" | "shape" | "text" | "scan" | "comment" | "grid"
+type DesignToolId = "move" | "drag" | "scale" | "section" | "shape" | "text" | "note" | "scan" | "comment" | "grid"
 
 type ShapeId =
   | "rect"
