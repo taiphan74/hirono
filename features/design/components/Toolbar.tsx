@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import {
-  Send,
+  MousePointer2,
   StickyNote,
   Square,
   Type,
@@ -21,7 +21,7 @@ import { useDesignToolStore } from "@/stores/dialog-store"
 type ToolId = "move" | "drag" | "scale" | "section" | "shape" | "text" | "scan" | "comment" | "grid"
 
 const toolIconMap: Record<string, React.ComponentType<{ className?: string }>> = {
-  move: Send,
+  move: MousePointer2,
   drag: Hand,
   scale: Scaling,
   section: StickyNote,
@@ -33,7 +33,7 @@ const toolIconMap: Record<string, React.ComponentType<{ className?: string }>> =
 }
 
 const tools: { id: ToolId; icon: React.ComponentType<{ className?: string }>; variant: "primary" | "secondarySubtle" }[] = [
-  { id: "move", icon: Send, variant: "primary" },
+  { id: "move", icon: MousePointer2, variant: "primary" },
   { id: "section", icon: StickyNote, variant: "secondarySubtle" },
   { id: "shape", icon: Square, variant: "secondarySubtle" },
   { id: "text", icon: Type, variant: "secondarySubtle" },

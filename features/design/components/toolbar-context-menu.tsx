@@ -2,15 +2,20 @@
 
 import { useState } from "react"
 import { cn } from "@/lib/utils"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Hand, Move, Scaling } from "lucide-react"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { MousePointer2, Hand, Scaling, Check } from "lucide-react"
 import { useDesignToolStore } from "@/stores/dialog-store"
 
 type ToolId = "move" | "drag" | "scale"
 
 const toolItems = [
-  { id: "move" as ToolId, label: "Move", shortcut: "V", Icon: Move },
-  { id: "drag" as ToolId, label: "Drag", shortcut: "H", Icon: Hand },
+  { id: "move" as ToolId, label: "Move", shortcut: "V", Icon: MousePointer2 },
+  { id: "drag" as ToolId, label: "Hand", shortcut: "H", Icon: Hand },
   { id: "scale" as ToolId, label: "Scale", shortcut: "K", Icon: Scaling },
 ]
 
@@ -26,9 +31,11 @@ export function ToolbarContextMenu({ children }: ToolbarContextMenuProps) {
   const activeTool = useDesignToolStore((s) => s.activeTool)
   const setActiveTool = useDesignToolStore((s) => s.setActiveTool)
 
+  const currentItem = toolItems.find((item) => item.id === activeTool) || toolItems[0]
+
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
+    <DropdownMenu open={open} onOpenChange={setOpen}>
+      <DropdownMenuTrigger asChild>
         <div
           onContextMenu={(e) => {
             e.preventDefault()
@@ -37,36 +44,35 @@ export function ToolbarContextMenu({ children }: ToolbarContextMenuProps) {
         >
           {children}
         </div>
-      </PopoverTrigger>
-      <PopoverContent side="top" align="center" className="flex min-w-fit items-center gap-1 rounded-2xl border-[#D5D8DD] bg-white px-3 py-2 shadow-[0px_1px_4px_0px_rgba(12,12,13,0.05),0px_1px_4px_0px_rgba(12,12,13,0.1)]">
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        align="start"
+        className="w-40 rounded-2xl border-[#D5D8DD] bg-white p-1 shadow-[0px_1px_4px_0px_rgba(12,12,13,0.05),0px_1px_4px_0px_rgba(12,12,13,0.1)]"
+      >
         {toolItems.map((item) => {
           const isActive = activeTool === item.id
           return (
-            <button
+            <DropdownMenuItem
               key={item.id}
-              type="button"
-              className="flex size-9 items-center justify-center rounded-[4px] p-0 hover:bg-[#F5F5F5]"
-              onClick={() => {
-                setActiveTool(item.id)
-                setOpen(false)
-              }}
+              onClick={() => setActiveTool(item.id)}
+              className="flex items-center justify-between rounded-lg px-3 py-2 cursor-pointer"
             >
-              <span
-                className={cn(
-                  "size-2 shrink-0 rounded-full",
-                  isActive ? "bg-[#5036ef]" : "bg-[#111316] opacity-0"
-                )}
-              />
-              <item.Icon
-                className={cn(
-                  "size-5 shrink-0",
-                  isActive ? "text-[#5036ef]" : "text-[#111316]"
-                )}
-              />
-            </button>
+              <div className="flex items-center gap-2">
+                <item.Icon
+                  className={cn(
+                    "size-4",
+                    isActive ? "text-[#5036ef]" : "text-[#111316]"
+                  )}
+                />
+                <span className={cn("text-sm", isActive ? "text-[#5036ef] font-medium" : "text-[#111316]")}>
+                  {item.label}
+                </span>
+              </div>
+              {isActive && <Check className="size-4 text-[#5036ef]" />}
+            </DropdownMenuItem>
           )
         })}
-      </PopoverContent>
-    </Popover>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }

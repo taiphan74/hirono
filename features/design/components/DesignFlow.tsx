@@ -369,6 +369,10 @@ function DesignFlowCanvas() {
         connectionMode={ConnectionMode.Loose}
         className={`absolute inset-0 ${cursorClass}`}
         fitView
+        panOnDrag={activeTool === "drag"}
+        nodesDraggable={activeTool !== "drag" && activeTool !== "scale"}
+        elementsSelectable={activeTool !== "drag"}
+        selectionOnDrag={activeTool !== "drag"}
       >
         <Background />
       </ReactFlow>
