@@ -13,7 +13,7 @@ import {
 /* ============================================================
  * WorkspaceCard.MenuItem
  * ============================================================ */
-type WorkspaceCardMenuItemProps = React.HTMLAttributes<HTMLDivElement> & {
+type WorkspaceCardMenuItemProps = Omit<React.HTMLAttributes<HTMLDivElement>, "onSelect"> & {
   inset?: boolean
 }
 

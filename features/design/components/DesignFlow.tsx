@@ -5,10 +5,15 @@ import {
   Background,
   useNodesState,
   useEdgesState,
+  addEdge,
   ReactFlowProvider,
   useReactFlow,
+  ConnectionMode,
+  MarkerType,
   type NodeTypes,
   type Node,
+  type Edge,
+  type Connection,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { CanvasControls } from "./CanvasControls";
@@ -17,10 +22,10 @@ import { useDesignToolStore } from "@/stores/dialog-store";
 import { SectionNode } from "./section";
 import { ShapeNode, type ShapeType } from "./shape-node";
 import { TextNode } from "./text-node";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNodeSync } from "@/features/design/hooks/use-node-sync";
 import { useParams } from "next/navigation";
-import { nodeService, type CanvasNode } from "@/features/design/services/node.service";
+import { nodeService, edgeService, type CanvasNode } from "@/features/design/services/node.service";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type FlowNode = Node<any, any>;
@@ -92,14 +97,15 @@ function mapApiNodeToFlowNode(
 
 function DesignFlowCanvas() {
   const [nodes, setNodes, onNodesChange] = useNodesState<FlowNode>([]);
-  const [edges, , onEdgesChange] = useEdgesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
   const activeTool = useDesignToolStore((s) => s.activeTool);
   const setActiveTool = useDesignToolStore((s) => s.setActiveTool);
   const cursorClass = cursorClassMap[activeTool] ?? "";
   const { screenToFlowPosition } = useReactFlow();
   const params = useParams();
   const workspaceId = params.slug as string;
-  const { createNode, updateNode } = useNodeSync({ workspaceId });
+  const { createNode, updateNode, deleteNode } = useNodeSync({ workspaceId });
+  const [selectedNodeIds, setSelectedNodeIds] = useState<string[]>([]);
 
   const updateTextNode = useCallback(
     (id: string, text: string) => {
@@ -122,6 +128,29 @@ function DesignFlowCanvas() {
     [updateNode]
   );
 
+  const handleSelectionChange = useCallback(
+    ({ nodes }: { nodes: Node[] }) => {
+      setSelectedNodeIds(nodes.map((n) => n.id));
+    },
+    []
+  );
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.key === "Delete" || event.key === "Backspace") && selectedNodeIds.length > 0) {
+        event.preventDefault();
+        selectedNodeIds.forEach((nodeId) => {
+          deleteNode(nodeId);
+          setNodes((nds) => nds.filter((n) => n.id !== nodeId));
+        });
+        setSelectedNodeIds([]);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [selectedNodeIds, deleteNode, setNodes]);
+
   const handleResizeEnd = useCallback(
     (nodeId: string, size: { width: number; height: number }) => {
       updateNode(nodeId, {
@@ -129,6 +158,50 @@ function DesignFlowCanvas() {
       });
     },
     [updateNode]
+  );
+
+  const onConnect = useCallback(
+    (connection: Connection) => {
+      if (!connection.source || !connection.target) return;
+
+      const edgeId = crypto.randomUUID();
+      setEdges((eds) =>
+        addEdge(
+          {
+            ...connection,
+            id: edgeId,
+            type: "smoothstep",
+            style: {
+              stroke: "#111827",
+              strokeWidth: 2,
+            },
+            markerEnd: {
+              type: MarkerType.ArrowClosed,
+            },
+          },
+          eds
+        )
+      );
+
+      edgeService
+        .createEdge(workspaceId, {
+          from: {
+            nodeId: connection.source,
+            anchor: connection.sourceHandle || "right",
+          },
+          to: {
+            nodeId: connection.target,
+            anchor: connection.targetHandle || "left",
+          },
+        })
+        .then((res) => {
+          if (res.status !== "SUCCESS") {
+            console.error("Failed to save edge:", res.message);
+          }
+        })
+        .catch(console.error);
+    },
+    [setEdges, workspaceId]
   );
 
   const onChangeShape = useCallback(
@@ -184,6 +257,25 @@ function DesignFlowCanvas() {
       }
     }).catch(console.error);
   }, [workspaceId, setNodes, updateTextNode, handleResizeEnd, onChangeShape, onChangeShapeLabel, onCommitShapeLabel]);
+
+  useEffect(() => {
+    if (!workspaceId) return;
+    edgeService.getEdges(workspaceId).then((res) => {
+      if (res.status === "SUCCESS" && res.data) {
+        const flowEdges: Edge[] = res.data.map((e) => ({
+          id: e.id,
+          source: e.from.nodeId,
+          target: e.to.nodeId,
+          sourceHandle: e.from.anchor,
+          targetHandle: e.to.anchor,
+          type: e.type || "smoothstep",
+          style: e.style || { stroke: "#111827", strokeWidth: 2 },
+          markerEnd: { type: MarkerType.ArrowClosed },
+        }));
+        setEdges(flowEdges);
+      }
+    }).catch(console.error);
+  }, [workspaceId, setEdges]);
 
   const handlePaneClick = useCallback(
     (event: React.MouseEvent) => {
@@ -259,7 +351,7 @@ function DesignFlowCanvas() {
         return;
       }
     },
-    [activeTool, screenToFlowPosition, setNodes, setActiveTool, updateTextNode, createNode, onChangeShape, handleResizeEnd]
+    [activeTool, screenToFlowPosition, setNodes, setActiveTool, updateTextNode, createNode, onChangeShape, onChangeShapeLabel, onCommitShapeLabel, handleResizeEnd]
   );
 
   return (
@@ -270,9 +362,13 @@ function DesignFlowCanvas() {
         nodeTypes={nodeTypes}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
+        onConnect={onConnect}
         onPaneClick={handlePaneClick}
         onNodeDragStop={handleNodeDragStop}
+        onSelectionChange={handleSelectionChange}
+        connectionMode={ConnectionMode.Loose}
         className={`absolute inset-0 ${cursorClass}`}
+        fitView
       >
         <Background />
       </ReactFlow>

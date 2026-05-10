@@ -99,3 +99,44 @@ export const nodeService = {
   ): Promise<ApiResponse<CanvasNode>> =>
     api.patch(`${BASE(workspaceId)}/${nodeId}/move-with-children`, data),
 }
+
+export interface EdgeEndpoint {
+  nodeId: string
+  anchor: string
+}
+
+export interface CanvasEdge {
+  id: string
+  workspaceId: string
+  from: EdgeEndpoint
+  to: EdgeEndpoint
+  type: string
+  style: Record<string, string>
+}
+
+export interface CreateEdgeRequest {
+  from: EdgeEndpoint
+  to: EdgeEndpoint
+  type?: string
+  style?: Record<string, string>
+}
+
+const EDGE_BASE = (workspaceId: string) =>
+  `workspaces/${workspaceId}/edges`
+
+export const edgeService = {
+  getEdges: (workspaceId: string): Promise<ApiResponse<CanvasEdge[]>> =>
+    api.get(EDGE_BASE(workspaceId)),
+
+  createEdge: (
+    workspaceId: string,
+    data: CreateEdgeRequest,
+  ): Promise<ApiResponse<CanvasEdge>> =>
+    api.post(EDGE_BASE(workspaceId), data),
+
+  deleteEdge: (
+    workspaceId: string,
+    edgeId: string,
+  ): Promise<ApiResponse<string>> =>
+    api.delete(`${EDGE_BASE(workspaceId)}/${edgeId}`),
+}
